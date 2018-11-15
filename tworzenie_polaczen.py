@@ -1,7 +1,7 @@
 import os
 import json
 from datetime import datetime
-from geopy.distance import great_circle
+
 
 startTime = datetime.now() #mierzenie czasu wykonywania programu
 
@@ -27,14 +27,37 @@ for i in datafiles:
 #odwolywanie sie do konkretnego czujnika z konkretnego dnia
 print (json_list[0][0].keys())
 
-id_coordintates = []
+from class_id_connections import id_connections
+
+
+#tworzenie sieci polaczen i eksport do pliku
+
+#connections = []
+#plik = open("siec_polaczen","w")
+#for i in json_list[0]:
+#     connections.append(id_connections(i['id'],i['latitude'],i['longitude'],json_list[0],5))
+#
+# for i in connections:
+#     plik.write("id="+str(i.id))
+#     plik.write("\n")
+#     for j in i.connections:
+#         plik.write(str(j))
+#         plik.write("\n")
+# plik.close()
+#
+#
+
+#inicjalizacja klasy sensor
+#import polaczen sensorow z pliku
+from class_sensor import sensor
+sensor_list = []
 for i in json_list[0]:
-    id_coordintates.append([i['id'],i['latitude'],i['longitude']])
-from class_sensor import export_connections_to_file
-export_connections_to_file(id_coordintates,5)
+    sensor_list.append(sensor(i['id']))
+for i in sensor_list:
+    i.import_connections(start_index=("id="+str(i.id)))
 
 
 
-#print(json_list[0][0]['latitude'])
+
 
 print("Program wykonywał się " + str((datetime.now() - startTime).seconds)+ " sekund")
