@@ -25,8 +25,13 @@ for i in datafiles:
     with open(i) as json_file:
         json_list.append(json.load(json_file))
 #odwolywanie sie do konkretnego czujnika z konkretnego dnia
-print (json_list[0][0].keys())
-
+#print (json_list[0][123]['history'][0].keys())
+#print (json_list[0][123].keys())
+#print(json_list[0][123]['currentMeasurements'])
+print(json_list[0][123]['history'])
+print(json_list[0][123]['history'][0])
+print(json_list[0][123]['history'][0]['measurements'])
+print(json_list[0][123]['history'][0]['measurements']['pm1'])
 from class_id_connections import id_connections
 
 
@@ -47,16 +52,23 @@ from class_id_connections import id_connections
 #
 #
 
-#inicjalizacja klasy sensor
+# inicjalizacja klasy sensor
 #import polaczen sensorow z pliku
-from class_sensor import sensor
+from class_sensor import Sensor
 sensor_list = []
 for i in json_list[0]:
-    sensor_list.append(sensor(i['id']))
+    sensor_list.append(Sensor(i['id'],i['latitude'],i['longitude']))
 for i in sensor_list:
     i.import_connections(start_index=("id="+str(i.id)))
+    i.measurements = i.json_to_observations(json_list)
 
-
+print(sensor_list[0].connections)
+# for i in sensor_list[7].measurements:
+#     print(i.time_of_obs)
+print(len(sensor_list[7].measurements))
+print(sensor_list[7].id)
+print(len(sensor_list[8].measurements))
+print(sensor_list[8].id)
 
 
 
