@@ -34,17 +34,23 @@ class Sensor:
 
     def json_to_observations(self,json_all_days_list):
         tab = []
+        iteratorek = 0
         for i in json_all_days_list:
             for j in i:
                 key_list = j.keys()
                 if self.id == j['id'] and 'history' in key_list:
-                    meas_key_list = j['history'][0]['measurements'].keys()
                     for every_hour in j['history']:
-                        tab.append(Observations(datetime_string=every_hour['fromDateTime']))
+                        meas_key_list = every_hour['measurements'].keys()#musi się sprawdzac niestety co godz bo sa takie czujniki w ktorych zmienia sie z godziny na godzine
+                        tab.append(Observations())
+                        tab[iteratorek].set_time(every_hour['fromDateTime'])
+                        if 'pm1' in meas_key_list:
+                            tab[iteratorek].set_pm1(every_hour['measurements']['pm1'])
+                        iteratorek += 1
+
 
 
         return tab
 
 
-#dodac przypadki jeżeli jest tylko czesc danych
-#sprobowac to zrobic seterami
+#dodac przypadki reszte na seterach z ifami
+

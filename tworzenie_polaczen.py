@@ -69,6 +69,9 @@ print(len(sensor_list[7].measurements))
 print(sensor_list[7].id)
 print(len(sensor_list[8].measurements))
 print(sensor_list[8].id)
+for gowno in sensor_list[156].measurements:
+    print(gowno.time_of_obs)
+    print(gowno.pm1)
 
 
 
