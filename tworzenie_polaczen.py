@@ -1,6 +1,7 @@
 import os
 import json
 from datetime import datetime
+import matplotlib.pyplot as plt
 
 
 startTime = datetime.now() #mierzenie czasu wykonywania programu
@@ -29,9 +30,11 @@ for i in datafiles:
 #print (json_list[0][123].keys())
 #print(json_list[0][123]['currentMeasurements'])
 print(json_list[0][123]['history'])
+print(json_list[0][123].keys())
 print(json_list[0][123]['history'][0])
 print(json_list[0][123]['history'][0]['measurements'])
 print(json_list[0][123]['history'][0]['measurements']['pm1'])
+
 from class_id_connections import id_connections
 
 
@@ -59,9 +62,10 @@ sensor_list = []
 for i in json_list[0]:
     sensor_list.append(Sensor(i['id'],i['latitude'],i['longitude']))
 for i in sensor_list:
-    i.import_connections(start_index=("id="+str(i.id)))
+    i.import_connections()
     i.measurements = i.json_to_observations(json_list)
-
+# for i in sensor_list:
+#     i.calc_var_pm10(sensor_list)
 print(sensor_list[0].connections)
 # for i in sensor_list[7].measurements:
 #     print(i.time_of_obs)
@@ -69,10 +73,19 @@ print(len(sensor_list[7].measurements))
 print(sensor_list[7].id)
 print(len(sensor_list[8].measurements))
 print(sensor_list[8].id)
-for gowno in sensor_list[156].measurements:
-    print(gowno.time_of_obs)
-    print(gowno.pm1)
 
-
+sensor_list[44].calc_var_pm10(sensor_list)
+wykres_y = []
+for jj in sensor_list[44].measurements:
+    print(jj.variance)
+    wykres_y.append(jj.variance)
+plt.plot(wykres_y)
+plt.ylabel('wariancja licznika w krakowie')
+plt.show()
+print("lat:")
+print (sensor_list[44].latitude)
+print("long:")
+print(sensor_list[44].longitude)
+print(sensor_list[44].connections)
 
 print("Program wykonywał się " + str((datetime.now() - startTime).seconds)+ " sekund")

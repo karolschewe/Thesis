@@ -6,7 +6,7 @@ class Observations:
     pm2_5 = -1.0
     pm10 = -1.0 #micrograms for cubic meter
     humidity = -1.0#percent as float
-    atm_pressure = -1.0  # kPa
+    atm_pressure = -1.0  # Pa
     temperature = -1.0#in celsius
     pollution_stage = -1 #1,2,3,4,5,6,7 the smaller the better, where 3 is average quality(about 100% of EU norms)
     airly_quality_index = -1.0#no one knows the formula
