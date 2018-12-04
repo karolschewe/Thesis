@@ -5,6 +5,7 @@ class Sensor:
     longitude = -1.0
     connections = []
     measurements = []
+    mean_div_pm10 = 0
 
     def __init__(self, id, lat, long):
         self.id = id
@@ -70,15 +71,9 @@ class Sensor:
                 elif is_present == False and j == i[-1]:
                     for jj in range(24):
                         tab.append(Observations())
-
-
-
-
-
-
         return tab
 
-    def calc_var_pm10(self,sensor_list):
+    def calc_div_pm10(self,sensor_list):
         iteratorek = 0
         for i in self.measurements:
             suma = 0
@@ -90,13 +85,40 @@ class Sensor:
                             suma += k.measurements[iteratorek].pm10
                         if k.measurements[iteratorek].pm10 == None:
                             denominator -= 1
-            if denominator > 0 and i.pm10 != None:
-                i.set_variance((suma/denominator)-i.pm10)
+            if denominator > 0 and i.pm10 != None and suma != 0:
+                mean = (suma/denominator)
+                i.set_div_pm10((((i.pm10-mean)/(mean))+1)*100)
             if denominator == 0 or i.pm10 == None:
-                i.set_variance(0)
+                i.set_div_pm10(0)
             if denominator < 0:
                 print("blad w skrypcie")
             iteratorek += 1
+
+    def calc_mean_div_pm10(self):
+        temp_sum = 0
+        for i in self.measurements:
+            temp_sum+=i.div_pm10
+        self.mean_div_pm10 = temp_sum/len(self.measurements)
+
+
+
+    def import_mean_div_pm_10(self, dir="pm10_mean_div",start_index="id=", end_index="id="):
+        data_file = open(dir, 'r')
+        found = False
+        find = start_index + str(self.id)
+        for line in data_file:
+            if found is True:
+                block = line.strip()
+                break
+            if line.strip() == find:
+                found = True
+
+
+        data_file.close()
+        self.mean_div_pm10 = float(block)
+
+
+
 
 
 #dodac przypadki reszte na seterach z ifami
