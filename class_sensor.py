@@ -89,7 +89,7 @@ class Sensor:
                 mean = (suma/denominator)
                 i.set_div_pm10((((i.pm10-mean)/(mean))+1)*100)
             if denominator == 0 or i.pm10 == None:
-                i.set_div_pm10(0)
+                i.set_div_pm10(100)
             if denominator < 0:
                 print("blad w skrypcie")
             iteratorek += 1

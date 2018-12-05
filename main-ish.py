@@ -33,8 +33,8 @@ print(json_list[0][123]['history'][0]['measurements']['pm1'])
 
 # inicjalizacja klasy sensor
 sensor_list = init.init_sensor_list(json_list)
-
-
+init.calc_div(sensor_list)
+init.export_mean_div_pm_10(sensor_list)
 init.import_mean_div_pm_10(sensor_list)
 
 init.export_coords_to_excel(sensor_list)

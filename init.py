@@ -61,6 +61,11 @@ def init_connections(sensor_list):
             plik.write(str(j))
             plik.write("\n")
     plik.close()
+def calc_div(sensor_list):
+    for i in sensor_list:
+        i.calc_div_pm10(sensor_list)
+        i.calc_mean_div_pm10()
+
 
 def export_mean_div_pm_10(sensor_list):
     export_file = open("pm10_mean_div","w")
@@ -77,22 +82,28 @@ def export_coords_to_excel(sensor_list):
 
     lat_list = []
     long_list = []
+    mean_div_list = []
     for i in sensor_list:
         if i.mean_div_pm10 > 200:
             print(i.id)
             lat_list.append(i.latitude)
             long_list.append(i.longitude)
-    workbook = xlsxwriter.Workbook('myplaces.xlsx')
+            mean_div_list.append(i.mean_div_pm10)
+    workbook = xlsxwriter.Workbook('myplaces3.xlsx')
     worksheet = workbook.add_worksheet()
     row = 0
     col = 0
     worksheet.write(row,col,"latitude")
     worksheet.write(row,col+1,"longitude")
+    worksheet.write(row, col + 2, "mean_div_value")
+    worksheet.write(row, col + 3, "address")
     row+=1
     iteratorek = 0
     for i in range(len(lat_list)):
         worksheet.write(row,col,lat_list[iteratorek])
         worksheet.write(row,col+1,long_list[iteratorek])
+        worksheet.write(row, col + 2, mean_div_list[iteratorek])
+
         row+=1
         iteratorek+=1
 
