@@ -5,20 +5,22 @@ from class_sensor import Sensor
 
 startTime = datetime.now() #mierzenie czasu wykonywania programu
 
-
+# DONE:
 #dodac procentowo ile jest wiecej
 #czyli dywergencja/srednia w otoczeniu
 #obliczyc średnią dywergencję dla czujnika
 #i znaleźć czujniki ze średnią powyżej średniej
-#robic rozklad srednich dywergencji
-#wykres z tego
 #zrobic mapę z srednich dywergencji (np wykres: x szerokość y długość)
 #pomyslec zeby wyliczone wariancje dla sensora wyrzucac do pliku i potem tylko to wczytywac i na tym liczyc zamiast zawsze od nowa
+
+# TODO:
+#robic rozklad srednich dywergencji
+#wykres z tego
 # w ogole dzielic sobie program na segmenty
 #korelacje serii czasowych sasiadow
 #korelacje dywergencji sasiadow
 #zrobic model zerowy -- wrzucic jako dane z czujników rozklad jednostajny i policzyc to samo
-
+#zrobic tak, aby dalsi sąsiedzi mieli mniejszy wpływ na gradient
 
 
 

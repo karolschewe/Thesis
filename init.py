@@ -1,4 +1,4 @@
-
+import class_sensor
 def import_data(path = None):
     import os
     import json
@@ -47,6 +47,8 @@ def init_sensor_list(json_list):
     print("zakonczono import polaczen i pomiarow")
     return sensor_list
 
+# woronoj w google: voronoi diagrsm python implrmrnysyion
+#jest w scipy
 def init_connections(sensor_list):
     from class_id_connections import id_connections
     connections = []
@@ -73,6 +75,7 @@ def export_mean_div_pm_10(sensor_list):
         print("id="+str(i.id),file=export_file)
         print(i.mean_div_pm10,file=export_file)
     export_file.close()
+
 def import_mean_div_pm_10(sensor_list,dir = "pm10_mean_div"):
     for i in sensor_list:
         i.import_mean_div_pm_10(dir=dir)
@@ -108,3 +111,16 @@ def export_coords_to_excel(sensor_list):
         iteratorek+=1
 
     workbook.close()
+
+def calc_mean_pm10(sensor_list):
+    for i in sensor_list:
+        i.calc_mean_pm10()
+
+def export_mean_pm10(sensor_list):
+    export_file = open("pm10_mean", "w")
+    for i in sensor_list:
+        print("id=" + str(i.id), file=export_file)
+        print(i.mean_pm10, file=export_file)
+    export_file.close()
+
+

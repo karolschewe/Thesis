@@ -6,6 +6,7 @@ class Sensor:
     connections = []
     measurements = []
     mean_div_pm10 = 0
+    mean_pm10 = 0
 
     def __init__(self, id, lat, long):
         self.id = id
@@ -116,6 +117,18 @@ class Sensor:
 
         data_file.close()
         self.mean_div_pm10 = float(block)
+
+    def calc_mean_pm10(self):
+        temp_sum = 0
+        denominator = 0
+        for i in self.measurements:
+            if i.pm10 != None:
+                if i.pm10 > 0.01:
+                    temp_sum += i.pm10
+                    denominator+=1
+        if denominator != 0:
+            self.mean_pm10 = temp_sum/denominator
+
 
 
 
