@@ -1,4 +1,5 @@
 from class_observations import Observations
+from geopy.distance import great_circle
 class Sensor:
     id = -1
     latitude = -1.0
@@ -6,6 +7,7 @@ class Sensor:
     connections = []
     measurements = []
     mean_div_pm10 = 0
+    mean_div_pm10_weighted = 0
     mean_pm10 = 0
 
     def __init__(self, id, lat, long):
@@ -88,12 +90,13 @@ class Sensor:
                             denominator -= 1
             if denominator > 0 and i.pm10 != None and suma != 0:
                 mean = (suma/denominator)
-                i.set_div_pm10((((i.pm10-mean)/(mean))+1)*100)
+                i.set_div_pm10((((i.pm10-mean)/(mean))+1))
             if denominator == 0 or i.pm10 == None:
-                i.set_div_pm10(100)
+                i.set_div_pm10(1)
             if denominator < 0:
                 print("blad w skrypcie")
             iteratorek += 1
+
 
     def calc_mean_div_pm10(self):
         temp_sum = 0
@@ -101,6 +104,45 @@ class Sensor:
             temp_sum+=i.div_pm10
         self.mean_div_pm10 = temp_sum/len(self.measurements)
 
+    def calc_div_pm10_weighted(self,sensor_list):
+        iteratorek = 0
+        for i in self.measurements:
+            suma = 0
+            suma_wag = 0
+            denominator = len(self.connections)
+            min_dist = 0.5 # uwaga!!!!!!
+            for j in self.connections:
+                for k in sensor_list:
+                    if j == k.id:
+                        if k.measurements[iteratorek].pm10 != None:
+                            me = (self.latitude, self.longitude)
+                            it = (k.latitude, k.longitude)
+                            dist = great_circle(me, it).kilometers
+                            if dist < min_dist:
+                                waga = 1.0 / (min_dist * min_dist)
+                                suma_wag += waga
+                                suma += (k.measurements[iteratorek].pm10) * waga
+                            if dist > min_dist:
+                                waga = 1.0/(dist*dist)
+                                suma_wag+=waga
+                                suma += (k.measurements[iteratorek].pm10)*waga
+                        if k.measurements[iteratorek].pm10 == None:
+                            denominator -= 1
+            if denominator > 0 and i.pm10 != None and suma != 0:
+                mean = (suma/suma_wag)
+                i.set_div_pm10_weighted((((i.pm10-mean)/(mean))+1))
+            if denominator == 0 or i.pm10 == None:
+                i.set_div_pm10(1)
+            if denominator < 0:
+                print("blad w skrypcie")
+            iteratorek += 1
+
+
+    def calc_mean_div_pm10_weighted(self):
+        temp_sum = 0
+        for i in self.measurements:
+            temp_sum += i.div_pm10_weighted
+        self.mean_div_pm10_weighted = temp_sum/len(self.measurements)
 
 
     def import_mean_div_pm_10(self, dir="pm10_mean_div",start_index="id=", end_index="id="):

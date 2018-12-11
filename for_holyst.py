@@ -1,4 +1,7 @@
 import init
+from datetime import datetime
+
+startTime = datetime.now() #mierzenie czasu wykonywania programu
 json_list = init.import_data()
 
 # prezentacja
@@ -35,8 +38,12 @@ sensor_list = init.init_sensor_list(json_list)
 #                 print(j.time_of_obs)
 #                 print(j.pm10)
 
+
+
+
 for i in sensor_list:
-    if i.id == 2674:
-        i.calc_div_pm10(sensor_list)
-        init.export_data_excel(i)
+    if i.id == 739:
+        print (len(i.connections))
+
+print("Program wykonywał się " + str((datetime.now() - startTime).seconds)+ " sekund")
 #sprawdz czy do initu nie trzeba wprowadzic zmian (tworzenie_polaczen.py)
