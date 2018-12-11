@@ -116,6 +116,33 @@ def calc_mean_pm10(sensor_list):
     for i in sensor_list:
         i.calc_mean_pm10()
 
+def export_data_excel(sensor):
+    import xlsxwriter
+    time_list = []
+    div_list = []
+    pm10_list = []
+    for i in sensor.measurements:
+        time_list.append(str(i.time_of_obs))
+        div_list.append(i.div_pm10)
+        pm10_list.append(i.pm10)
+    workbook = xlsxwriter.Workbook('ciekawy.xlsx')
+    worksheet = workbook.add_worksheet()
+    row = 0
+    col = 0
+    worksheet.write(row,col,"time")
+    worksheet.write(row,col+1,"div")
+    worksheet.write(row, col + 2, "pm10")
+    row+=1
+    iteratorek = 0
+    for i in range(len(pm10_list)):
+        worksheet.write(row,col,time_list[iteratorek])
+        worksheet.write(row,col+1,div_list[iteratorek])
+        worksheet.write(row, col + 2, pm10_list[iteratorek])
+
+        row+=1
+        iteratorek+=1
+
+    workbook.close()
 def export_mean_pm10(sensor_list):
     export_file = open("pm10_mean", "w")
     for i in sensor_list:

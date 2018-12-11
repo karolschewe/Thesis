@@ -20,18 +20,23 @@ sensor_list = init.init_sensor_list(json_list)
 # init.calc_mean_pm10(sensor_list)
 # init.export_mean_pm10(sensor_list)
 
-file = open("interesujące punkty(lista id)","r")
-ajdi = []
-for line in file:
-    ajdi.append(int(line.strip()))
-file.close()
-# file = open('my_places_pm10', "w")
+# file = open("interesujące punkty(lista id)","r")
+# ajdi = []
+# for line in file:
+#     ajdi.append(int(line.strip()))
+# file.close()
+# # file = open('my_places_pm10', "w")
+# for i in sensor_list:
+#     if i.id in ajdi:
+#         print("id="+str(i.id))
+#         print(len(i.connections))
+#         if i.id == 3365:
+#             for j in i.measurements:
+#                 print(j.time_of_obs)
+#                 print(j.pm10)
+
 for i in sensor_list:
-    if i.id in ajdi:
-        print("id="+str(i.id))
-        print(len(i.connections))
-        if i.id == 3365:
-            for j in i.measurements:
-                print(j.time_of_obs)
-                print(j.pm10)
+    if i.id == 2674:
+        i.calc_div_pm10(sensor_list)
+        init.export_data_excel(i)
 #sprawdz czy do initu nie trzeba wprowadzic zmian (tworzenie_polaczen.py)
