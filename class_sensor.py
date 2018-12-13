@@ -90,9 +90,9 @@ class Sensor:
                             denominator -= 1
             if denominator > 0 and i.pm10 != None and suma != 0:
                 mean = (suma/denominator)
-                i.set_div_pm10((((i.pm10-mean)/(mean))+1))
+                i.set_div_pm10((((i.pm10-mean)/(mean))))
             if denominator == 0 or i.pm10 == None:
-                i.set_div_pm10(1)
+                i.set_div_pm10(0)
             if denominator < 0:
                 print("blad w skrypcie")
             iteratorek += 1
@@ -130,9 +130,9 @@ class Sensor:
                             denominator -= 1
             if denominator > 0 and i.pm10 != None and suma != 0:
                 mean = (suma/suma_wag)
-                i.set_div_pm10_weighted((((i.pm10-mean)/(mean))+1))
+                i.set_div_pm10_weighted((((i.pm10-mean)/(mean))))
             if denominator == 0 or i.pm10 == None:
-                i.set_div_pm10(1)
+                i.set_div_pm10(0)
             if denominator < 0:
                 print("blad w skrypcie")
             iteratorek += 1
