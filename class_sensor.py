@@ -6,6 +6,7 @@ class Sensor:
     longitude = -1.0
     connections = []
     measurements = []
+    daily_pm10_maxes = []
     mean_div_pm10 = 0
     mean_div_pm10_weighted = 0
     mean_pm10 = 0
@@ -59,16 +60,6 @@ class Sensor:
                             tab[iteratorek].set_pm2_5(every_hour['measurements']['pm25'])
                         if 'pm10' in meas_key_list:
                             tab[iteratorek].set_pm10(every_hour['measurements']['pm10'])
-                        if 'humidity' in meas_key_list:
-                            tab[iteratorek].set_humidity(every_hour['measurements']['humidity'])
-                        if 'pressure' in meas_key_list:
-                            tab[iteratorek].set_pressure(every_hour['measurements']['pressure'])
-                        if 'pollutionLevel' in meas_key_list:
-                            tab[iteratorek].set_pollution_stage(every_hour['measurements']['pollutionLevel'])
-                        if 'airQualityIndex' in meas_key_list:
-                            tab[iteratorek].set_quality_index(every_hour['measurements']['airQualityIndex'])
-                        if 'temperature' in meas_key_list:
-                            tab[iteratorek].set_temperature(every_hour['measurements']['temperature'])
                         iteratorek += 1
                         is_present = True
                 elif is_present == False and j == i[-1]:
@@ -171,10 +162,27 @@ class Sensor:
         if denominator != 0:
             self.mean_pm10 = temp_sum/denominator
 
+    def calc_daily_maxes(self):
+        from dateutil import parser
+        day_list = []
+        maxes_list = []
+        check = parser.parse("1996-01-22T21:00:00Z")
+        max = 0
+        for i in self.measurements:
+            dzien = (i.time_of_obs-check).days
+            if dzien < 3:
+                continue
+            elif dzien not in day_list:
+                day_list.append(dzien)
+                if max == 0 and i.pm10 not in [None, 0]:
+                    max = i.pm10
+                elif max != 0:
+                    maxes_list.append(max)
+                    max = 0
+            elif dzien in day_list:
+                if i.pm10 != None:
+                    if i.pm10 > max:
+                        max = i.pm10
+        self.daily_pm10_maxes = maxes_list
 
-
-
-
-
-#dodac przypadki reszte na seterach z ifami
 
