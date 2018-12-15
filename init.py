@@ -50,6 +50,12 @@ def init_sensor_list(json_list):
     for i in sensor_list:
         i.import_connections()
         i.measurements = i.json_to_observations(json_list)
+        i.import_mean_pm_10()
+        i.import_mean_div_pm_10()
+        i.import_mean_div_wei_pm_10()
+        i.import_pm10_maxes()
+        i.import_pm10_div_maxes()
+
     print("zakonczono import polaczen i pomiarow")
     return sensor_list
 
@@ -69,6 +75,7 @@ def init_connections(sensor_list):
             plik.write(str(j))
             plik.write("\n")
     plik.close()
+
 
 # ----- funkcje liczace -----
 def calc_div(sensor_list):

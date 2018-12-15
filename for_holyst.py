@@ -2,6 +2,9 @@ import init
 from datetime import datetime
 import exports
 
+#starac sie robic kilka operacji w jednej pętli
+
+
 startTime = datetime.now() #mierzenie czasu wykonywania programu
 
 
