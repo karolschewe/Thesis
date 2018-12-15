@@ -23,23 +23,26 @@ def import_data(path = None):
 def init_sensor_list(json_list):
     from class_sensor import Sensor
     sensor_list = []
-    for i in json_list[0]:
-        sensor_list.append(Sensor(i['id'], i['latitude'], i['longitude']))
-    print("liczba sensorow")
-    print(len(sensor_list))
-    print("liczba sensorow")
-    # sprawdzenie czy nie ma wiecej sensorow w reszcie
-    for i in json_list:
-        for j in i:
-            temp_id = j['id']
-            boolean = False
-            for k in sensor_list:
-                if k.id == temp_id:
-                    boolean = True
-            if boolean is False:
-                sensor_list.append(Sensor(j['id'], j['latitude'], j['longitude']))
-    print("liczba sensorow po sprawdzeniu 4 plikow")
-    print(len(sensor_list))
+    file = open('lista_czujnikow', 'r')
+    iteratorek = 0
+    sensor_id = 0
+    lat = 0
+    long = 0
+    for line in file:
+        if iteratorek == 0:
+            sensor_id = int(line.strip())
+            iteratorek += 1
+        elif iteratorek == 1:
+            lat = float(line.strip())
+            iteratorek+=1
+        elif iteratorek == 2:
+            long = float(line.strip())
+            sensor_list.append(Sensor(sensor_id, lat, long))
+            iteratorek += 1
+        else:
+            line.strip()
+            iteratorek=0
+
 
     # wyliczenie polaczen
     # init.init_connections(sensor_list)

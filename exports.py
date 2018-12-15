@@ -5,6 +5,12 @@ def export_mean_div_pm_10_file(sensor_list, dir = "pm10_mean_div"):
         print(i.mean_div_pm10,file=export_file)
     export_file.close()
 
+def export_mean_div_wei_pm_10_file(sensor_list, dir = "pm10_mean_wei_div"):
+    export_file = open(dir,"w")
+    for i in sensor_list:
+        print("id="+str(i.id),file=export_file)
+        print(i.mean_div_pm10_weighted,file=export_file)
+    export_file.close()
 
 def export_mean_pm10_file(sensor_list, dir = "pm10_mean"):
     export_file = open(dir, "w")
@@ -23,11 +29,17 @@ def export_daily_pm10_maxes_file(sensor_list, dir = "pm10_daily_maxes"):
     export_file.close()
 
 
-def import_mean_div_pm_10(sensor_list,dir = "pm10_mean_div"):
+def export_daily_div_maxes_file(sensor_list, dir = "div_daily_maxes"):
+    export_file = open(dir, "w")
     for i in sensor_list:
-        i.import_mean_div_pm_10(dir=dir)
+        print("id=" + str(i.id), file=export_file)
+        for j in i.daily_div_maxes:
+            print(j, file=export_file)
+    export_file.close()
 
 
+
+# ----------excel-----------
 def export_time_series_excel(sensor, dir="sensor.xlsx"):
     import xlsxwriter
     time_list = []

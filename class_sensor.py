@@ -7,6 +7,7 @@ class Sensor:
     connections = []
     measurements = []
     daily_pm10_maxes = []
+    daily_div_maxes = []
     mean_div_pm10 = 0
     mean_div_pm10_weighted = 0
     mean_pm10 = 0
@@ -162,7 +163,7 @@ class Sensor:
         if denominator != 0:
             self.mean_pm10 = temp_sum/denominator
 
-    def calc_daily_maxes(self):
+    def calc_daily_maxes_pm10(self):
         from dateutil import parser
         day_list = []
         maxes_list = []
@@ -185,4 +186,26 @@ class Sensor:
                         max = i.pm10
         self.daily_pm10_maxes = maxes_list
 
+    def calc_daily_maxes_div(self):
+        from dateutil import parser
+        day_list = []
+        maxes_list = []
+        check = parser.parse("1996-01-22T21:00:00Z")
+        max = 0
+        for i in self.measurements:
+            dzien = (i.time_of_obs-check).days
+            if dzien < 3:
+                continue
+            elif dzien not in day_list:
+                day_list.append(dzien)
+                if max == 0 and i.div_pm10 not in [None, 0]:
+                    max = i.div_pm10
+                elif max != 0:
+                    maxes_list.append(max)
+                    max = 0
+            elif dzien in day_list:
+                if i.div_pm10 != None:
+                    if i.div_pm10 > max:
+                        max = i.div_pm10
+        self.daily_div_maxes = maxes_list
 
