@@ -1,5 +1,3 @@
-import class_sensor
-
 # -----funkcje inicjalizacji -----
 def import_data(path = None):
     import os
@@ -153,3 +151,9 @@ def calc_mean_pm10(sensor_list):
 def calc_coef_pm10(sensor_list):
     for i in sensor_list:
         i.calc_cor_coefs_pm10(sensor_list)
+
+
+def calc_mean_maxes(sensor_list):
+    for i in sensor_list:
+        i.calc_mean_maxes_pm10()
+        i.calc_mean_maxes_div()

@@ -132,11 +132,12 @@ def mean_pm_10_hist(sensor_list):
     median = statistics.median(mean_values)
     stdev= statistics.stdev(mean_values)
     maxvalue = max(mean_values)
-    stats_string = ("mean: "+str(mean)+"\n"+"median: "+ str(median)+"\n"+"stdev: "+str(stdev)+"\n"+"max: "+str(maxvalue))
+    stats_string = ("średnia: " + str(round(mean,3)) + "\n" + "mediana: " + str(round(median,3)) + "\n" + "odch. std: " + str(
+        round(stdev,3)) + "\n" + "max: " + str(round(maxvalue,3))+"\n"+"N: "+str(len(mean_values)))
     pyplot.xlabel('pm10[$\mu g/m^3$]')
     pyplot.ylabel('liczba zliczen')
     pyplot.figtext(0.6, 0.7, stats_string)
-    pyplot.title("Rozkład średnich zanieczyszczeń")
+    pyplot.title("Rozkład średnich dziennych zanieczyszczeń")
     pyplot.show()
 
 
@@ -164,11 +165,11 @@ def mean_pm_10_div_hist(sensor_list):
     median = statistics.median(mean_values)
     stdev = statistics.stdev(mean_values)
     maxvalue = max(mean_values)
-    stats_string = ("mean: " + str(mean) + "\n" + "median: " + str(median) + "\n" + "stdev: " + str(
-        stdev) + "\n" + "max: " + str(maxvalue))
-    pyplot.figtext(0.6, 0.7, stats_string)
-    pyplot.title("Rozkład średnich dywergencji względnych")
-    pyplot.xlabel('dywergencja względna pm10[%]')
+    stats_string = ("średnia: " + str(round(mean,3)) + "\n" + "mediana: " + str(round(median,3)) + "\n" + "odch. std: " + str(
+        round(stdev,3)) + "\n" + "max: " + str(round(maxvalue,3))+"\n"+"N: "+str(len(mean_values)))
+    pyplot.figtext(0.7, 0.7, stats_string)
+    pyplot.title("Rozkład średnich dziennych dywergencji względnych")
+    pyplot.xlabel('dywergencja względna pm10')
     pyplot.ylabel('liczba zliczen')
     pyplot.show()
 
@@ -192,4 +193,28 @@ def FFT_plot(sensor, type_of_data="pm10"):
     else:
         print("types other than pm10 not implemented")
 
+def max_pm_10_div_hist(sensor_list):
+    mean_values = []
+    for i in sensor_list:
+        mean_values.append(i.mean_daily_div_maxes)
+
+    biny = []
+    var = -1.5
+    for i in range(125):
+        biny.append(var)
+        var += 0.05
+    from matplotlib import pyplot
+    import statistics
+    (n, bins, patches) = pyplot.hist(mean_values, bins=biny)
+    mean = statistics.mean(mean_values)
+    median = statistics.median(mean_values)
+    stdev = statistics.stdev(mean_values)
+    maxvalue = max(mean_values)
+    stats_string = ("średnia: " + str(round(mean,3)) + "\n" + "mediana: " + str(round(median,3)) + "\n" + "odch. std: " + str(
+        round(stdev,3)) + "\n" + "max: " + str(round(maxvalue,3))+"\n"+"N: "+str(len(mean_values)))
+    pyplot.figtext(0.7, 0.7, stats_string)
+    pyplot.title("Rozkład średnich maksymalnych dziennych dywergencji względnych")
+    pyplot.xlabel('Dywergencja względna pm10')
+    pyplot.ylabel('liczba zliczen')
+    pyplot.show()
 

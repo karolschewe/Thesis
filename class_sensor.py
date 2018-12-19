@@ -9,7 +9,9 @@ class Sensor:
     cor_coefs_pm10_div = []
     measurements = []
     daily_pm10_maxes = []
+    mean_daily_pm10_maxes = 0
     daily_div_maxes = []
+    mean_daily_div_maxes = 0
     mean_div_pm10 = 0
     mean_div_pm10_weighted = 0
     mean_pm10 = 0
@@ -19,7 +21,7 @@ class Sensor:
         self.latitude = lat
         self.longitude = long
 
-
+    # ----inits----
     def import_connections(self, dir="siec_polaczen", start_index="id=", end_index="id="):
         if dir == "local":
             data_file = open("test.txt")
@@ -70,6 +72,8 @@ class Sensor:
                         tab.append(Observations())
         return tab
 
+    # -----calculations-----
+
     def calc_div_pm10(self,sensor_list):
         iteratorek = 0
         for i in self.measurements:
@@ -91,13 +95,11 @@ class Sensor:
                 print("blad w skrypcie")
             iteratorek += 1
 
-
     def calc_mean_div_pm10(self):
         temp_sum = 0
         for i in self.measurements:
             temp_sum+=i.div_pm10
         self.mean_div_pm10 = temp_sum/len(self.measurements)
-
 
     def calc_div_pm10_weighted(self,sensor_list):
         iteratorek = 0
@@ -132,103 +134,11 @@ class Sensor:
                 print("blad w skrypcie")
             iteratorek += 1
 
-
     def calc_mean_div_pm10_weighted(self):
         temp_sum = 0
         for i in self.measurements:
             temp_sum += i.div_pm10_weighted
         self.mean_div_pm10_weighted = temp_sum/len(self.measurements)
-
-
-    def import_mean_div_pm_10(self, dir="pm10_mean_div",start_index="id=", end_index="id="):
-        data_file = open(dir, 'r')
-        found = False
-        find = start_index + str(self.id)
-        for line in data_file:
-            if found is True:
-                block = line.strip()
-                break
-            if line.strip() == find:
-                found = True
-
-
-        data_file.close()
-        self.mean_div_pm10 = float(block)
-
-
-    def import_mean_div_wei_pm_10(self, dir="pm10_mean_wei_div",start_index="id=", end_index="id="):
-        data_file = open(dir, 'r')
-        found = False
-        find = start_index + str(self.id)
-        for line in data_file:
-            if found is True:
-                block = line.strip()
-                break
-            if line.strip() == find:
-                found = True
-
-
-        data_file.close()
-        self.mean_div_pm10_weighted = float(block)
-
-
-    def import_mean_pm_10(self, dir="pm10_mean",start_index="id=", end_index="id="):
-        data_file = open(dir, 'r')
-        found = False
-        find = start_index + str(self.id)
-        for line in data_file:
-            if found is True:
-                block = line.strip()
-                break
-            if line.strip() == find:
-                found = True
-
-
-        data_file.close()
-        self.mean_pm10 = float(block)
-
-
-    def import_pm10_maxes(self, dir="pm10_daily_maxes", start_index="id=", end_index="id="):
-        if dir == "local":
-            data_file = open("test.txt")
-        else:
-            data_file = open(dir,'r')
-        block = []
-        found = False
-        find = start_index+str(self.id)
-        for line in data_file:
-            if found:
-                if line.strip().startswith(end_index): break
-                block.append(line)
-            else:
-                if line.strip() == find:
-                    found = True
-
-        data_file.close()
-        block = list(map(float, block))
-        self.daily_pm10_maxes = block
-
-
-    def import_pm10_div_maxes(self, dir="div_daily_maxes", start_index="id=", end_index="id="):
-        if dir == "local":
-            data_file = open("test.txt")
-        else:
-            data_file = open(dir,'r')
-        block = []
-        found = False
-        find = start_index+str(self.id)
-        for line in data_file:
-            if found:
-                if line.strip().startswith(end_index): break
-                block.append(line)
-            else:
-                if line.strip() == find:
-                    found = True
-
-        data_file.close()
-        block = list(map(float, block))
-        self.daily_div_maxes = block
-
 
     def calc_mean_pm10(self):
         temp_sum = 0
@@ -407,3 +317,113 @@ class Sensor:
                     id_coefs_to_set.append(coefs_to_append)
 
         self.cor_coefs_pm10_div = id_coefs_to_set
+
+
+
+        # -----imports-----
+
+    def calc_mean_maxes_pm10(self):
+        suma = 0
+        for i in self.daily_pm10_maxes:
+            suma += i
+        if len(self.daily_pm10_maxes) != 0:
+            self.mean_daily_pm10_maxes = suma/len(self.daily_pm10_maxes)
+
+    def calc_mean_maxes_div(self):
+        suma = 0.0
+        for i in self.daily_div_maxes:
+            suma += i
+        if len(self.daily_div_maxes) != 0:
+            self.mean_daily_div_maxes = float(suma)/float(len(self.daily_div_maxes))
+        print(self.mean_daily_div_maxes)
+
+
+    # ----imports----
+    def import_mean_div_pm_10(self, dir="pm10_mean_div",start_index="id=", end_index="id="):
+        data_file = open(dir, 'r')
+        found = False
+        find = start_index + str(self.id)
+        for line in data_file:
+            if found is True:
+                block = line.strip()
+                break
+            if line.strip() == find:
+                found = True
+
+
+        data_file.close()
+        self.mean_div_pm10 = float(block)
+
+
+    def import_mean_div_wei_pm_10(self, dir="pm10_mean_wei_div",start_index="id=", end_index="id="):
+        data_file = open(dir, 'r')
+        found = False
+        find = start_index + str(self.id)
+        for line in data_file:
+            if found is True:
+                block = line.strip()
+                break
+            if line.strip() == find:
+                found = True
+
+
+        data_file.close()
+        self.mean_div_pm10_weighted = float(block)
+
+
+    def import_mean_pm_10(self, dir="pm10_mean",start_index="id=", end_index="id="):
+        data_file = open(dir, 'r')
+        found = False
+        find = start_index + str(self.id)
+        for line in data_file:
+            if found is True:
+                block = line.strip()
+                break
+            if line.strip() == find:
+                found = True
+
+
+        data_file.close()
+        self.mean_pm10 = float(block)
+
+
+    def import_pm10_maxes(self, dir="pm10_daily_maxes", start_index="id=", end_index="id="):
+        if dir == "local":
+            data_file = open("test.txt")
+        else:
+            data_file = open(dir,'r')
+        block = []
+        found = False
+        find = start_index+str(self.id)
+        for line in data_file:
+            if found:
+                if line.strip().startswith(end_index): break
+                block.append(line)
+            else:
+                if line.strip() == find:
+                    found = True
+
+        data_file.close()
+        block = list(map(float, block))
+        self.daily_pm10_maxes = block
+
+
+    def import_pm10_div_maxes(self, dir="div_daily_maxes", start_index="id=", end_index="id="):
+        if dir == "local":
+            data_file = open("test.txt")
+        else:
+            data_file = open(dir,'r')
+        block = []
+        found = False
+        find = start_index+str(self.id)
+        for line in data_file:
+            if found:
+                if line.strip().startswith(end_index): break
+                block.append(line)
+            else:
+                if line.strip() == find:
+                    found = True
+
+        data_file.close()
+        block = list(map(float, block))
+        self.daily_div_maxes = block
