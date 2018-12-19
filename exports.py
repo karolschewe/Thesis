@@ -110,4 +110,86 @@ def export_coords_excel(sensor_list):
         iteratorek+=1
 
     workbook.close()
+# -----wykresy-----
+
+def mean_pm_10_hist(sensor_list):
+    n = 0
+    for i in range(50):
+        if sensor_list[i].mean_pm10 == 0:
+            n += 1
+    if n == 50:
+        for i in sensor_list:
+            i.import_mean_pm_10()
+    mean_values = []
+    for i in sensor_list:
+        mean_values.append(i.mean_pm10)
+
+    from matplotlib import pyplot
+    import statistics
+    biny = range(0,300,5)
+    (n, bins, patches) = pyplot.hist(mean_values,bins=biny)
+    mean = statistics.mean(mean_values)
+    median = statistics.median(mean_values)
+    stdev= statistics.stdev(mean_values)
+    maxvalue = max(mean_values)
+    stats_string = ("mean: "+str(mean)+"\n"+"median: "+ str(median)+"\n"+"stdev: "+str(stdev)+"\n"+"max: "+str(maxvalue))
+    pyplot.xlabel('pm10[$\mu g/m^3$]')
+    pyplot.ylabel('liczba zliczen')
+    pyplot.figtext(0.6, 0.7, stats_string)
+    pyplot.title("Rozkład średnich zanieczyszczeń")
+    pyplot.show()
+
+
+def mean_pm_10_div_hist(sensor_list):
+    n = 0
+    for i in range(50):
+        if sensor_list[i].mean_div_pm10 == 0:
+            n += 1
+    if n == 50:
+        for i in sensor_list:
+            i.import_mean_div_pm_10()
+    mean_values = []
+    for i in sensor_list:
+        mean_values.append(i.mean_div_pm10)
+
+    biny = []
+    var = -2.0
+    for i in range(100):
+        biny.append(var)
+        var += 0.04
+    from matplotlib import pyplot
+    import statistics
+    (n, bins, patches) = pyplot.hist(mean_values, bins=biny)
+    mean = statistics.mean(mean_values)
+    median = statistics.median(mean_values)
+    stdev = statistics.stdev(mean_values)
+    maxvalue = max(mean_values)
+    stats_string = ("mean: " + str(mean) + "\n" + "median: " + str(median) + "\n" + "stdev: " + str(
+        stdev) + "\n" + "max: " + str(maxvalue))
+    pyplot.figtext(0.6, 0.7, stats_string)
+    pyplot.title("Rozkład średnich dywergencji względnych")
+    pyplot.xlabel('dywergencja względna pm10[%]')
+    pyplot.ylabel('liczba zliczen')
+    pyplot.show()
+
+def FFT_plot(sensor, type_of_data="pm10"):
+    from numpy import fft
+    data_list = []
+    time_list = []
+    if type_of_data == "pm10":
+        for i in sensor.measurements:
+            data_list.append(i.pm10)
+            time_list.append(i.time_of_obs)
+        powerof2 = 0
+        while(len(data_list) <= 2**powerof2):
+            powerof2 += 1
+        transformed_data = fft.fft(data_list)
+        from matplotlib import pyplot
+        # pyplot.plot(transformed_data,time_list)
+        # pyplot.show()
+        print("transformata:")
+        print (transformed_data)
+    else:
+        print("types other than pm10 not implemented")
+
 

@@ -20,7 +20,7 @@ def import_data(path = None):
     return json_list
 
 
-def init_sensor_list(json_list):
+def init_sensor_list(json_list,import_all = False):
     from class_sensor import Sensor
     sensor_list = []
     file = open('lista_czujnikow', 'r')
@@ -50,14 +50,55 @@ def init_sensor_list(json_list):
     for i in sensor_list:
         i.import_connections()
         i.measurements = i.json_to_observations(json_list)
-        i.import_mean_pm_10()
-        i.import_mean_div_pm_10()
-        i.import_mean_div_wei_pm_10()
-        i.import_pm10_maxes()
-        i.import_pm10_div_maxes()
+        if import_all is True:
+            i.import_mean_pm_10()
+            i.import_mean_div_pm_10()
+            i.import_mean_div_wei_pm_10()
+            i.import_pm10_maxes()
+            i.import_pm10_div_maxes()
 
     print("zakonczono import polaczen i pomiarow")
     return sensor_list
+
+
+def init_control_group():
+    from class_sensor import Sensor
+    from class_observations import Observations
+
+    sensor_list = []
+    file = open('lista_czujnikow', 'r')
+    iteratorek = 0
+    sensor_id = 0
+    lat = 0
+    long = 0
+    for line in file:
+        if iteratorek == 0:
+            sensor_id = int(line.strip())
+            iteratorek += 1
+        elif iteratorek == 1:
+            lat = float(line.strip())
+            iteratorek += 1
+        elif iteratorek == 2:
+            long = float(line.strip())
+            sensor_list.append(Sensor(sensor_id, lat, long))
+            iteratorek += 1
+        else:
+            line.strip()
+            iteratorek = 0
+    from datetime import datetime
+    from datetime import timedelta
+    from numpy import random
+    czas = datetime.now()
+    for i in sensor_list:
+        for j in range(240):
+            czas += timedelta(hours=1)
+            i.measurements.append(Observations(datetime_string=str(czas),pm10=random.uniform(10,110)))
+
+        i.import_connections()
+
+
+    return sensor_list
+
 
 # woronoj w google: voronoi diagrsm python implrmrnysyion
 #jest w scipy
@@ -108,3 +149,7 @@ def calc_mean_pm10(sensor_list):
         iteratorek+=1
         if iteratorek % 200 == 0:
             print(str(iteratorek/20)+"%")
+
+def calc_coef_pm10(sensor_list):
+    for i in sensor_list:
+        i.calc_cor_coefs_pm10(sensor_list)

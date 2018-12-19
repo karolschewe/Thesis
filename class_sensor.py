@@ -5,6 +5,8 @@ class Sensor:
     latitude = -1.0
     longitude = -1.0
     connections = []
+    cor_coefs_pm10 = [] # first value is id for which coef was calculated, second is correlation coefficient, the last is p-value
+    cor_coefs_pm10_div = []
     measurements = []
     daily_pm10_maxes = []
     daily_div_maxes = []
@@ -95,6 +97,7 @@ class Sensor:
         for i in self.measurements:
             temp_sum+=i.div_pm10
         self.mean_div_pm10 = temp_sum/len(self.measurements)
+
 
     def calc_div_pm10_weighted(self,sensor_list):
         iteratorek = 0
@@ -284,3 +287,123 @@ class Sensor:
                         max = i.div_pm10
         self.daily_div_maxes = maxes_list
 
+    def calc_cor_coefs_pm10(self,sensor_list):
+        from scipy.stats.stats import pearsonr
+        id_coefs_to_set = []
+        my_obs = []
+        my_obs.append(0.1)
+        const = 0
+        for m in self.measurements:
+            if const != 0:
+                if m.pm10 == None:
+                    const += 1
+                    continue
+                else:
+                    for n in range(const):
+                        my_obs.append((m.pm10+my_obs[-1])/const)
+                    my_obs.append(m.pm10)
+                    const = 0
+            else:
+                if m.pm10 == None:
+                    const += 1
+                    continue
+                else:
+                    my_obs.append(m.pm10)
+        if const!= 0:
+            for i in range(const):
+                my_obs.append(0)
+            const = 0
+
+        sasiedzi = self.connections
+        for i in sasiedzi:
+            for j in sensor_list:
+                if i == j.id and j.id in sasiedzi:
+                    its_obs = []
+                    its_obs.append(0.1)
+                    for m in j.measurements:
+                        if const != 0:
+                            if m.pm10 == None:
+                                const += 1
+                                continue
+                            else:
+                                for n in range(const):
+                                    its_obs.append((m.pm10 + its_obs[-1]) / const)
+                                its_obs.append(m.pm10)
+                                const = 0
+                        else:
+                            if m.pm10 == None:
+                                const += 1
+                                continue
+                            else:
+                                its_obs.append(m.pm10)
+                    if const != 0:
+                        for i in range(const):
+                            its_obs.append(0)
+                        const = 0
+
+                    calculated = pearsonr(my_obs,its_obs)
+                    coefs_to_append = [j.id,calculated[0],calculated[1]]
+                    id_coefs_to_set.append(coefs_to_append)
+
+        self.cor_coefs_pm10 = id_coefs_to_set
+
+    def calc_cor_coefs_pm10_div(self,sensor_list):
+        print("-----prosze sprawdzic czy policzono dywergencje-----")
+        from scipy.stats.stats import pearsonr
+        id_coefs_to_set = []
+        my_obs = []
+        my_obs.append(0.1)
+        const = 0
+        for m in self.measurements:
+            if const != 0:
+                if m.div_pm10 == None:
+                    const += 1
+                    continue
+                else:
+                    for n in range(const):
+                        my_obs.append((m.div_pm10+my_obs[-1])/const)
+                    my_obs.append(m.div_pm10)
+                    const = 0
+            else:
+                if m.div_pm10 == None:
+                    const += 1
+                    continue
+                else:
+                    my_obs.append(m.div_pm10)
+        if const!= 0:
+            for i in range(const):
+                my_obs.append(0)
+            const = 0
+
+
+        for i in self.connections:
+            for j in sensor_list:
+                if i == j.id:
+                    its_obs = []
+                    its_obs.append(0.1)
+                    for m in j.measurements:
+                        if const != 0:
+                            if m.div_pm10 == None:
+                                const += 1
+                                continue
+                            else:
+                                for n in range(const):
+                                    its_obs.append((m.div_pm10 + its_obs[-1]) / const)
+                                its_obs.append(m.div_pm10)
+                                const = 0
+                        else:
+                            if m.div_pm10 == None:
+                                const += 1
+                                continue
+                            else:
+                                its_obs.append(m.div_pm10)
+                    if const != 0:
+                        for i in range(const):
+                            its_obs.append(0)
+                        const = 0
+
+                    calculated = pearsonr(my_obs,its_obs)
+                    coefs_to_append = [j.id,calculated[0],calculated[1]]
+                    id_coefs_to_set.append(coefs_to_append)
+
+        self.cor_coefs_pm10_div = id_coefs_to_set
