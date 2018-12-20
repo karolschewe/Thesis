@@ -80,12 +80,10 @@ class Sensor:
             suma = 0
             denominator = len(self.connections)
             for j in self.connections:
-                for k in sensor_list:
-                    if j == k.id:
-                        if k.measurements[iteratorek].pm10 != None:
-                            suma += k.measurements[iteratorek].pm10
-                        if k.measurements[iteratorek].pm10 == None:
-                            denominator -= 1
+                if sensor_list[j].measurements[iteratorek].pm10 != None:
+                    suma += sensor_list[j].measurements[iteratorek].pm10
+                if sensor_list[j].measurements[iteratorek].pm10 == None:
+                    denominator -= 1
             if denominator > 0 and i.pm10 != None and suma != 0:
                 mean = (suma/denominator)
                 i.set_div_pm10((((i.pm10-mean)/(mean))))
@@ -109,22 +107,20 @@ class Sensor:
             denominator = len(self.connections)
             min_dist = 0.5 # uwaga!!!!!!
             for j in self.connections:
-                for k in sensor_list:
-                    if j == k.id:
-                        if k.measurements[iteratorek].pm10 != None:
-                            me = (self.latitude, self.longitude)
-                            it = (k.latitude, k.longitude)
-                            dist = great_circle(me, it).kilometers
-                            if dist < min_dist:
-                                waga = 1.0 / (min_dist * min_dist)
-                                suma_wag += waga
-                                suma += (k.measurements[iteratorek].pm10) * waga
-                            if dist > min_dist:
-                                waga = 1.0/(dist*dist)
-                                suma_wag+=waga
-                                suma += (k.measurements[iteratorek].pm10)*waga
-                        if k.measurements[iteratorek].pm10 == None:
-                            denominator -= 1
+                if sensor_list[j].measurements[iteratorek].pm10 != None:
+                    me = (self.latitude, self.longitude)
+                    it = (sensor_list[j].latitude, sensor_list[j].longitude)
+                    dist = great_circle(me, it).kilometers
+                    if dist < min_dist:
+                        waga = 1.0 / (min_dist * min_dist)
+                        suma_wag += waga
+                        suma += (sensor_list[j].measurements[iteratorek].pm10) * waga
+                    if dist > min_dist:
+                        waga = 1.0 / (dist * dist)
+                        suma_wag += waga
+                        suma += (sensor_list[j].measurements[iteratorek].pm10) * waga
+                if sensor_list[j].measurements[iteratorek].pm10 == None:
+                    denominator -= 1
             if denominator > 0 and i.pm10 != None and suma != 0:
                 mean = (suma/suma_wag)
                 i.set_div_pm10_weighted((((i.pm10-mean)/(mean))))
@@ -220,40 +216,39 @@ class Sensor:
                 else:
                     my_obs.append(m.pm10)
         if const!= 0:
-            for i in range(const):
+            for g in range(const):
                 my_obs.append(0)
             const = 0
 
         sasiedzi = self.connections
         for i in sasiedzi:
-            for j in sensor_list:
-                if i == j.id and j.id in sasiedzi:
-                    its_obs = []
-                    its_obs.append(0.1)
-                    for m in j.measurements:
-                        if const != 0:
-                            if m.pm10 == None:
-                                const += 1
-                                continue
-                            else:
-                                for n in range(const):
-                                    its_obs.append((m.pm10 + its_obs[-1]) / const)
-                                its_obs.append(m.pm10)
-                                const = 0
-                        else:
-                            if m.pm10 == None:
-                                const += 1
-                                continue
-                            else:
-                                its_obs.append(m.pm10)
+            if i in sensor_list.keys():
+                its_obs = []
+                its_obs.append(0.1)
+                for m in sensor_list[i].measurements:
                     if const != 0:
-                        for i in range(const):
-                            its_obs.append(0)
-                        const = 0
+                        if m.pm10 == None:
+                            const += 1
+                            continue
+                        else:
+                            for n in range(const):
+                                its_obs.append((m.pm10 + its_obs[-1]) / const)
+                            its_obs.append(m.pm10)
+                            const = 0
+                    else:
+                        if m.pm10 == None:
+                            const += 1
+                            continue
+                        else:
+                            its_obs.append(m.pm10)
+                if const != 0:
+                    for q in range(const):
+                        its_obs.append(0)
+                    const = 0
 
-                    calculated = pearsonr(my_obs,its_obs)
-                    coefs_to_append = [j.id,calculated[0],calculated[1]]
-                    id_coefs_to_set.append(coefs_to_append)
+                calculated = pearsonr(my_obs, its_obs)
+                coefs_to_append = [sensor_list[i].id, calculated[0], calculated[1]]
+                id_coefs_to_set.append(coefs_to_append)
 
         self.cor_coefs_pm10 = id_coefs_to_set
 
@@ -287,34 +282,33 @@ class Sensor:
 
 
         for i in self.connections:
-            for j in sensor_list:
-                if i == j.id:
-                    its_obs = []
-                    its_obs.append(0.1)
-                    for m in j.measurements:
-                        if const != 0:
-                            if m.div_pm10 == None:
-                                const += 1
-                                continue
-                            else:
-                                for n in range(const):
-                                    its_obs.append((m.div_pm10 + its_obs[-1]) / const)
-                                its_obs.append(m.div_pm10)
-                                const = 0
-                        else:
-                            if m.div_pm10 == None:
-                                const += 1
-                                continue
-                            else:
-                                its_obs.append(m.div_pm10)
-                    if const != 0:
-                        for i in range(const):
-                            its_obs.append(0)
+            its_obs = []
+            its_obs.append(0.1)
+            for m in sensor_list[i].measurements:
+                if const != 0:
+                    if m.div_pm10 == None:
+                        const += 1
+                        continue
+                    else:
+                        for n in range(const):
+                            its_obs.append((m.div_pm10 + its_obs[-1]) / const)
+                        its_obs.append(m.div_pm10)
                         const = 0
+                else:
+                    if m.div_pm10 == None:
+                        const += 1
+                        continue
+                    else:
+                        its_obs.append(m.div_pm10)
+            if const != 0:
+                for q in range(const):
+                    its_obs.append(0)
+                const = 0
 
-                    calculated = pearsonr(my_obs,its_obs)
-                    coefs_to_append = [j.id,calculated[0],calculated[1]]
-                    id_coefs_to_set.append(coefs_to_append)
+            calculated = pearsonr(my_obs, its_obs)
+            coefs_to_append = [sensor_list[i].id, calculated[0], calculated[1]]
+            id_coefs_to_set.append(coefs_to_append)
+
 
         self.cor_coefs_pm10_div = id_coefs_to_set
 
@@ -335,7 +329,8 @@ class Sensor:
             suma += i
         if len(self.daily_div_maxes) != 0:
             self.mean_daily_div_maxes = float(suma)/float(len(self.daily_div_maxes))
-        print(self.mean_daily_div_maxes)
+
+
 
 
     # ----imports----

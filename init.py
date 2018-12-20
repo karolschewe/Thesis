@@ -20,7 +20,7 @@ def import_data(path = None):
 
 def init_sensor_list(json_list,import_all = False):
     from class_sensor import Sensor
-    sensor_list = []
+    sensor_list = {}
     file = open('lista_czujnikow', 'r')
     iteratorek = 0
     sensor_id = 0
@@ -35,7 +35,7 @@ def init_sensor_list(json_list,import_all = False):
             iteratorek+=1
         elif iteratorek == 2:
             long = float(line.strip())
-            sensor_list.append(Sensor(sensor_id, lat, long))
+            sensor_list[sensor_id] = Sensor(sensor_id,lat,long)
             iteratorek += 1
         else:
             line.strip()
@@ -45,7 +45,7 @@ def init_sensor_list(json_list,import_all = False):
     # wyliczenie polaczen
     # init.init_connections(sensor_list)
 
-    for i in sensor_list:
+    for i in sensor_list.values():
         i.import_connections()
         i.measurements = i.json_to_observations(json_list)
         if import_all is True:
@@ -120,7 +120,7 @@ def init_connections(sensor_list):
 def calc_div(sensor_list):
     iteratorek = 0
     print("liczenie dywergencji")
-    for i in sensor_list:
+    for i in sensor_list.values():
         i.calc_div_pm10(sensor_list)
         i.calc_mean_div_pm10()
         iteratorek += 1
@@ -131,7 +131,7 @@ def calc_div(sensor_list):
 def calc_div_weighted(sensor_list):
     iteratorek = 0
     print("liczenie dywergencji wazonej")
-    for i in sensor_list:
+    for i in sensor_list.values():
         i.calc_div_pm10_weighted(sensor_list)
         i.calc_mean_div_pm10_weighted()
         iteratorek += 1
@@ -142,18 +142,20 @@ def calc_div_weighted(sensor_list):
 def calc_mean_pm10(sensor_list):
     iteratorek = 0
     print("liczenie sredniego pm10")
-    for i in sensor_list:
+    for i in sensor_list.values():
         i.calc_mean_pm10()
         iteratorek+=1
         if iteratorek % 200 == 0:
             print(str(iteratorek/20)+"%")
 
 def calc_coef_pm10(sensor_list):
-    for i in sensor_list:
+    for i in sensor_list.values():
         i.calc_cor_coefs_pm10(sensor_list)
 
 
 def calc_mean_maxes(sensor_list):
-    for i in sensor_list:
+    print("----proszę sprawdzić czy wyliczono maksima----")
+    for i in sensor_list.values():
         i.calc_mean_maxes_pm10()
         i.calc_mean_maxes_div()
+

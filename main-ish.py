@@ -20,12 +20,18 @@ json_list = init.import_data()
 
 # inicjalizacja klasy sensor
 sensor_list = init.init_sensor_list(json_list,import_all=True)
+init.calc_coef_pm10(sensor_list)
+
+init.calc_div(sensor_list)
+for i in sensor_list.values():
+    i.calc_cor_coefs_pm10_div(sensor_list)
 init.calc_mean_maxes(sensor_list)
-
+exports.max_pm_10_hist(sensor_list)
 exports.max_pm_10_div_hist(sensor_list)
-exports.FFT_plot(sensor_list[849])
-print(sensor_list[849].daily_div_maxes)
 
 
-
+exports.corr_coef_hist(sensor_list)
+exports.corr_coef_hist(sensor_list,log=True)
+exports.corr_coef_hist(sensor_list,div=True)
+exports.corr_coef_hist(sensor_list,log=True,div=True)
 print("Program wykonywał się " + str((datetime.now() - startTime).seconds)+ " sekund")
