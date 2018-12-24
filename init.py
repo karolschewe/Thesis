@@ -54,6 +54,7 @@ def init_sensor_list(json_list,import_all = False):
             i.import_mean_div_wei_pm_10()
             i.import_pm10_maxes()
             i.import_pm10_div_maxes()
+            i.import_address(json_list)
 
     print("zakonczono import polaczen i pomiarow")
     return sensor_list
@@ -154,8 +155,8 @@ def calc_coef_pm10(sensor_list):
 
 
 def calc_mean_maxes(sensor_list):
-    print("----proszę sprawdzić czy wyliczono maksima----")
     for i in sensor_list.values():
+        i.calc_daily_maxes_pm10()
         i.calc_mean_maxes_pm10()
         i.calc_mean_maxes_div()
 

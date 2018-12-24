@@ -15,6 +15,7 @@ class Sensor:
     mean_div_pm10 = 0
     mean_div_pm10_weighted = 0
     mean_pm10 = 0
+    address = ""
 
     def __init__(self, id, lat, long):
         self.id = id
@@ -41,6 +42,15 @@ class Sensor:
         data_file.close()
         block = list(map(int, block))
         self.connections = block
+    def import_address(self,json_all_days_list):
+        for i in json_all_days_list[0]:
+            if self.id == i['id']:
+                if 'address' in i.keys() and 'locality' in i['address'].keys():
+                    self.address = i['address']['locality']
+        for i in json_all_days_list[-1]:
+            if self.id == i['id']:
+                if 'address' in i.keys() and 'locality' in i['address'].keys():
+                    self.address = i['address']['locality']
 
     def json_to_observations(self,json_all_days_list):
         tab = []
