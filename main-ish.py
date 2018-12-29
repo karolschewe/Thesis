@@ -16,15 +16,11 @@ startTime = datetime.now() #mierzenie czasu wykonywania programu
 
 #lista zawierajaca wczytane dane z kazdego pliku w folderze ( 1 plik = 1 zmienna w liscie)
 json_list = init.import_data()
-
-
-# inicjalizacja klasy sensor
+print(json_list[3][125].keys())
 sensor_list = init.init_sensor_list(json_list)
-exports.FFT_plot(sensor_list[739],"Ładach")
-exports.FFT_plot(sensor_list[3165],"Pruszkowie")
-#exports.export_sources_excel(sensor_list,"źródła_base.xlsx")
-#exports.export_sources_excel(sensor_list,"źródła_wagi.xlsx",weighted=True)
 
 
 
+
+# dla 7 plikow init - 49 sekund
 print("Program wykonywał się " + str((datetime.now() - startTime).seconds)+ " sekund")

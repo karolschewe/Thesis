@@ -15,7 +15,14 @@ def import_data(path = None):
     for i in datafiles:
         with open(i) as json_file:
             json_list.append(json.load(json_file))
-    return json_list
+    json_list_dict = []
+    for ii in json_list:
+        temp_dict = {}
+        for jj in ii:
+            temp_dict[jj['id']] = jj
+        json_list_dict.append(temp_dict)
+
+    return json_list_dict
 
 
 def init_sensor_list(json_list,import_all = False):

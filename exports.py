@@ -306,9 +306,9 @@ def FFT_plot(sensor,gdzie = "", type_of_data="pm10"):
 
         print(data_list)
         print(len(data_list))
-        powerof2 = ceil(log2(len(data_list)))
+        powerof2 = (ceil(log2(len(data_list))))-1
         print("number of points:"+str(2**powerof2))
-        transformed_data = fft.fft(data_list,2**powerof2)
+        transformed_data = fft.fft(data_list,2**powerof2-1)
         from matplotlib import pyplot
         modules = []
         for i in transformed_data:

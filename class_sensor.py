@@ -56,17 +56,16 @@ class Sensor:
         tab = []
         iteratorek = 0
         for i in json_all_days_list:
-            is_present = False
-            for j in i:
-                key_list = j.keys()
-                if self.id == j['id'] and 'history' not in key_list:
+            if self.id in i.keys():
+                key_list = i[self.id].keys()
+                if 'history' not in key_list:
                     for ii in range(24):
                         tab.append(Observations())
-                        iteratorek+=1
-                        is_present = True
-                elif self.id == j['id'] and 'history' in key_list:
-                    for every_hour in j['history']:
-                        meas_key_list = every_hour['measurements'].keys()#musi się sprawdzac niestety co godz bo sa takie czujniki w ktorych zmienia sie z godziny na godzine
+                        iteratorek += 1
+                elif 'history' in key_list:
+                    for every_hour in i[self.id]['history']:
+                        meas_key_list = every_hour[
+                            'measurements'].keys()  # musi się sprawdzac niestety co godz bo sa takie czujniki w ktorych zmienia sie z godziny na godzine
                         tab.append(Observations())
                         tab[iteratorek].set_time(every_hour['fromDateTime'])
                         if 'pm1' in meas_key_list:
@@ -76,10 +75,10 @@ class Sensor:
                         if 'pm10' in meas_key_list:
                             tab[iteratorek].set_pm10(every_hour['measurements']['pm10'])
                         iteratorek += 1
-                        is_present = True
-                elif is_present == False and j == i[-1]:
-                    for jj in range(24):
-                        tab.append(Observations())
+            else:
+                for jj in range(24):
+                    tab.append(Observations())
+
         return tab
 
     # -----calculations-----
