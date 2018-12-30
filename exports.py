@@ -301,14 +301,15 @@ def FFT_plot(sensor,gdzie = "", type_of_data="pm10"):
     data_list = []
     if type_of_data == "pm10":
         for i in sensor.measurements:
-            data_list.append(i.pm10)
-            print(i.pm10)
+            if i.pm10 != None:
+                data_list.append(i.pm10)
+                print(i.pm10)
 
-        print(data_list)
-        print(len(data_list))
-        powerof2 = (ceil(log2(len(data_list))))-1
+
+        powerof2 = (ceil(log2(len(data_list))))
         print("number of points:"+str(2**powerof2))
-        transformed_data = fft.fft(data_list,2**powerof2-1)
+        print("ile punktow: "+str(len(data_list)))
+        transformed_data = fft.fft(data_list,2**powerof2)
         from matplotlib import pyplot
         modules = []
         for i in transformed_data:
@@ -327,8 +328,6 @@ def FFT_plot(sensor,gdzie = "", type_of_data="pm10"):
         pyplot.xlabel("moduł")
         pyplot.ylabel("liczba zliczeń")
         pyplot.show()
-        print("transformata:")
-        print (transformed_data)
     else:
         print("types other than pm10 not implemented")
 

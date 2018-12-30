@@ -25,7 +25,7 @@ def import_data(path = None):
     return json_list_dict
 
 
-def init_sensor_list(json_list,import_all = False):
+def init_sensor_list(json_list,import_all = False,random=False):
     from class_sensor import Sensor
     sensor_list = {}
     file = open('lista_czujnikow', 'r')
@@ -51,10 +51,20 @@ def init_sensor_list(json_list,import_all = False):
 
     # wyliczenie polaczen
     # init.init_connections(sensor_list)
-
+    zmienna = 0
+    lista_id = []
+    print("import połączeń i pomiarów")
     for i in sensor_list.values():
-        i.import_connections()
+        if zmienna % 200 == 0:
+            print(str(zmienna / 20) + "%")
+        if random == False:
+            i.import_connections()
+        else:
+            from random import sample
+            i.connections = (sample(sensor_list.keys(),10))
+
         i.measurements = i.json_to_observations(json_list)
+        zmienna += 1
         if import_all is True:
             i.import_mean_pm_10()
             i.import_mean_div_pm_10()
@@ -160,6 +170,9 @@ def calc_coef_pm10(sensor_list):
     for i in sensor_list.values():
         i.calc_cor_coefs_pm10(sensor_list)
 
+def calc_coef_pm10_div(sensor_list):
+    for i in sensor_list.values():
+        i.calc_cor_coefs_pm10_div(sensor_list)
 
 def calc_mean_maxes(sensor_list):
     for i in sensor_list.values():

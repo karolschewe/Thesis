@@ -16,11 +16,10 @@ startTime = datetime.now() #mierzenie czasu wykonywania programu
 
 #lista zawierajaca wczytane dane z kazdego pliku w folderze ( 1 plik = 1 zmienna w liscie)
 json_list = init.import_data()
-print(json_list[3][125].keys())
+#print(json_list[3][125].keys())
 sensor_list = init.init_sensor_list(json_list)
 
 
 
 
-# dla 7 plikow init - 49 sekund
 print("Program wykonywał się " + str((datetime.now() - startTime).seconds)+ " sekund")
