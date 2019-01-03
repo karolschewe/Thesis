@@ -18,8 +18,10 @@ startTime = datetime.now() #mierzenie czasu wykonywania programu
 json_list = init.import_data()
 #print(json_list[3][125].keys())
 sensor_list = init.init_sensor_list(json_list)
+init.calc_div(sensor_list)
+init.calc_div(sensor_list,"yusdgas")
 
-
+exports.FFT_plot(sensor_list[739],"Ładach",type_of_data="hatsdcf")
 
 
 print("Program wykonywał się " + str((datetime.now() - startTime).seconds)+ " sekund")

@@ -77,45 +77,6 @@ def init_sensor_list(json_list,import_all = False,random=False):
     return sensor_list
 
 
-def init_control_group():
-    from class_sensor import Sensor
-    from class_observations import Observations
-
-    sensor_list = []
-    file = open('lista_czujnikow', 'r')
-    iteratorek = 0
-    sensor_id = 0
-    lat = 0
-    long = 0
-    for line in file:
-        if iteratorek == 0:
-            sensor_id = int(line.strip())
-            iteratorek += 1
-        elif iteratorek == 1:
-            lat = float(line.strip())
-            iteratorek += 1
-        elif iteratorek == 2:
-            long = float(line.strip())
-            sensor_list.append(Sensor(sensor_id, lat, long))
-            iteratorek += 1
-        else:
-            line.strip()
-            iteratorek = 0
-    from datetime import datetime
-    from datetime import timedelta
-    from numpy import random
-    czas = datetime.now()
-    for i in sensor_list:
-        for j in range(240):
-            czas += timedelta(hours=1)
-            i.measurements.append(Observations(datetime_string=str(czas),pm10=random.uniform(10,110)))
-
-        i.import_connections()
-
-
-    return sensor_list
-
-
 # woronoj w google: voronoi diagrsm python implrmrnysyion
 #jest w scipy
 def init_connections(sensor_list):
@@ -135,48 +96,96 @@ def init_connections(sensor_list):
 
 
 # ----- funkcje liczace -----
-def calc_div(sensor_list):
+def calc_div(sensor_list, PM = "pm10"):
     iteratorek = 0
-    print("liczenie dywergencji")
+    if PM == "pm10":
+        print("---liczenie dywergencji pm10---")
+        for i in sensor_list.values():
+            i.calc_div_pm10(sensor_list)
+            i.calc_mean_div_pm10()
+            iteratorek += 1
+            if iteratorek % 200 == 0:
+                print(str(iteratorek / 20) + "%")
+    else:
+        print("---liczenie dywergencji pm2,5---")
+        for i in sensor_list.values():
+            i.calc_div_pm2_5(sensor_list)
+            i.calc_mean_div_pm2_5()
+            iteratorek += 1
+            if iteratorek % 200 == 0:
+                print(str(iteratorek / 20) + "%")
+
+def calc_div_weighted(sensor_list, PM = "pm10"):
+    iteratorek = 0
+    if PM == "pm10":
+        print("--PM10--liczenie dywergencji wazonej--PM10--")
+    else:
+        print("--PM2,5--liczenie dywergencji wazonej--PM2,5--")
     for i in sensor_list.values():
-        i.calc_div_pm10(sensor_list)
-        i.calc_mean_div_pm10()
+        if PM == "pm10":
+            i.calc_div_pm10_weighted(sensor_list)
+            i.calc_mean_div_pm10_weighted()
+        else:
+            i.calc_div_pm2_5_weighted(sensor_list)
+            i.calc_mean_div_pm2_5_weighted()
         iteratorek += 1
         if iteratorek % 200 == 0:
             print(str(iteratorek / 20) + "%")
 
 
-def calc_div_weighted(sensor_list):
+def calc_mean_pm(sensor_list,PM="pm10"):
     iteratorek = 0
-    print("liczenie dywergencji wazonej")
-    for i in sensor_list.values():
-        i.calc_div_pm10_weighted(sensor_list)
-        i.calc_mean_div_pm10_weighted()
-        iteratorek += 1
-        if iteratorek % 200 == 0:
-            print(str(iteratorek / 20) + "%")
+    if PM == "pm10":
+        print("liczenie sredniego pm10")
+        for i in sensor_list.values():
+            i.calc_mean_pm10()
+            iteratorek += 1
+            if iteratorek % 200 == 0:
+                print(str(iteratorek / 20) + "%")
+    else:
+        print("liczenie sredniego pm2.5")
+        for i in sensor_list.values():
+            i.calc_mean_pm2_5()
+            iteratorek += 1
+            if iteratorek % 200 == 0:
+                print(str(iteratorek / 20) + "%")
 
 
-def calc_mean_pm10(sensor_list):
-    iteratorek = 0
-    print("liczenie sredniego pm10")
-    for i in sensor_list.values():
-        i.calc_mean_pm10()
-        iteratorek+=1
-        if iteratorek % 200 == 0:
-            print(str(iteratorek/20)+"%")
+def calc_coef_pm(sensor_list,PM="pm10"):
+    if PM == "pm10":
+        print("---liczenie korelacji pm10---")
+        for i in sensor_list.values():
+            i.calc_cor_coefs_pm10(sensor_list)
+    else:
+        print("---liczenie korelacji pm2,5---")
+        for i in sensor_list.values():
+            i.calc_cor_coefs_pm2_5(sensor_list)
 
-def calc_coef_pm10(sensor_list):
-    for i in sensor_list.values():
-        i.calc_cor_coefs_pm10(sensor_list)
 
-def calc_coef_pm10_div(sensor_list):
+def calc_coef_div(sensor_list, PM ="pm10"):
+    print("-----prosze sprawdzic czy policzono dywergencje-----")
+    if PM == "pm10":
+        print("---liczenie korelacji dywergencji pm10---")
+        for i in sensor_list.values():
+            i.calc_cor_coefs_pm10_div(sensor_list)
+    else:
+        print("---liczenie korelacji dywergencji pm2,5---")
+        for i in sensor_list.values():
+            i.calc_cor_coefs_pm2_5_div(sensor_list)
+def calc_means(sensor_list):
     for i in sensor_list.values():
-        i.calc_cor_coefs_pm10_div(sensor_list)
-
-def calc_mean_maxes(sensor_list):
-    for i in sensor_list.values():
+        # ---wyliczam maksima---
         i.calc_daily_maxes_pm10()
+        i.calc_daily_maxes_pm2_5()
+        i.calc_daily_maxes_div()
+        i.calc_daily_maxes_div_pm2_5()
+        #---wyliczam srednie---
+        i.calc_mean_pm10()
+        i.calc_mean_pm2_5()
+        i.calc_mean_div_pm10_weighted()
+        i.calc_mean_div_pm2_5_weighted()
+        #---wyliczam mean maxes---
         i.calc_mean_maxes_pm10()
+        i.calc_mean_maxes_pm2_5()
         i.calc_mean_maxes_div()
-
+        i.calc_mean_maxes_div_pm2_5()
