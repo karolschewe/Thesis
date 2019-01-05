@@ -68,7 +68,7 @@ def export_time_series_excel(sensor, dir="sensor.xlsx"):
 
     workbook.close()
 
-def export_sources_excel(sensor_list,directory,weighted = False,min_val = 0.5):
+def export_sources_excel_pm10(sensor_list,directory,weighted = False,min_val = 0.5):
     import xlsxwriter
 
     lat_list = []
@@ -125,6 +125,65 @@ def export_sources_excel(sensor_list,directory,weighted = False,min_val = 0.5):
         iteratorek+=1
 
     workbook.close()
+
+def export_sources_excel_pm2_5(sensor_list,directory,weighted = False,min_val = 0.5):
+    import xlsxwriter
+
+    lat_list = []
+    long_list = []
+    mean_div_list = []
+    mean_pm10_list = []
+    percentage_list = []
+    sasiedzi = []
+    adresy = []
+    if weighted is False:
+        for i in sensor_list.values():
+            if i.mean_div_pm2_5 > min_val:
+                print(i.id)
+                lat_list.append(i.latitude)
+                long_list.append(i.longitude)
+                mean_div_list.append(i.mean_div_pm2_5)
+                mean_pm10_list.append(i.mean_pm2_5)
+                percentage_list.append(i.mean_pm2_5 / 25.0)
+                sasiedzi.append(len(i.connections))
+                adresy.append(i.address)
+    else:
+        for i in sensor_list.values():
+            if i.mean_div_pm2_5_weighted > min_val:
+                print(i.id)
+                lat_list.append(i.latitude)
+                long_list.append(i.longitude)
+                mean_div_list.append(i.mean_div_pm2_5_weighted)
+                mean_pm10_list.append(i.mean_pm2_5)
+                percentage_list.append(i.mean_pm2_5 / 25.0)
+                sasiedzi.append(len(i.connections))
+                adresy.append(i.address)
+    workbook = xlsxwriter.Workbook(directory)
+    worksheet = workbook.add_worksheet()
+    row = 0
+    col = 0
+    worksheet.write(row,col,"sz. geograficzna")
+    worksheet.write(row,col+1,"dł. geograficzna")
+    worksheet.write(row, col + 2, "śr.dzienna dywergencja względna")
+    worksheet.write(row, col + 3, "śr. stężenie PM2,5")
+    worksheet.write(row, col + 4, "% normy PM2,5")
+    worksheet.write(row, col + 5, "n_sasiadow")
+    worksheet.write(row, col + 6, "lokalizacja")
+    row+=1
+    iteratorek = 0
+    for i in range(len(lat_list)):
+        worksheet.write(row,col,lat_list[iteratorek])
+        worksheet.write(row,col+1,long_list[iteratorek])
+        worksheet.write(row, col + 2, mean_div_list[iteratorek])
+        worksheet.write(row, col + 3, mean_pm10_list[iteratorek])
+        worksheet.write(row, col + 4, percentage_list[iteratorek])
+        worksheet.write(row, col + 5, sasiedzi[iteratorek])
+        worksheet.write(row, col + 6, adresy[iteratorek])
+        row+=1
+        iteratorek+=1
+
+    workbook.close()
+
 # -----wykresy-----
 
 

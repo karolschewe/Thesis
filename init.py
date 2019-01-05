@@ -66,11 +66,11 @@ def init_sensor_list(json_list,import_all = False,random=False):
         i.measurements = i.json_to_observations(json_list)
         zmienna += 1
         if import_all is True:
-            i.import_mean_pm_10()
-            i.import_mean_div_pm_10()
-            i.import_mean_div_wei_pm_10()
-            i.import_pm10_maxes()
-            i.import_pm10_div_maxes()
+            #i.import_mean_pm_10()
+            #i.import_mean_div_pm_10()
+            #i.import_mean_div_wei_pm_10()
+            #i.import_pm10_maxes()
+            #i.import_pm10_div_maxes()
             i.import_address(json_list)
 
     print("zakonczono import polaczen i pomiarow")

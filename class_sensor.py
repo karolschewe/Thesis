@@ -55,11 +55,11 @@ class Sensor:
         block = list(map(int, block))
         self.connections = block
     def import_address(self,json_all_days_list):
-        for i in json_all_days_list[0]:
+        for i in json_all_days_list[0].values():
             if self.id == i['id']:
                 if 'address' in i.keys() and 'locality' in i['address'].keys():
                     self.address = i['address']['locality']
-        for i in json_all_days_list[-1]:
+        for i in json_all_days_list[-1].values():
             if self.id == i['id']:
                 if 'address' in i.keys() and 'locality' in i['address'].keys():
                     self.address = i['address']['locality']
