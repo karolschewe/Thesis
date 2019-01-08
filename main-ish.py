@@ -4,18 +4,6 @@ from datetime import datetime
 import matplotlib.pyplot as plt
 from class_sensor import Sensor
 
-startTime = datetime.now() #mierzenie czasu wykonywania programu
-
-#jakie parametry losować w próbie kontrolnej
-# jak to na wykres jak to jest zespolone? -- moduł
-# co jeszcze warto doliczyć -- minima
-# co powinienem zawrzeć w inżynerce
-# TODO:
-# histogram z maksimow
-
-
-#lista zawierajaca wczytane dane z kazdego pliku w folderze ( 1 plik = 1 zmienna w liscie)
-
 def policz_rzeczy_inz():
     json_list = init.import_data()
     sensor_list = init.init_sensor_list(json_list,True)
@@ -43,6 +31,20 @@ def policz_rzeczy_inz():
     exports.FFT_plot(sensor_list[1123], "Gliwicach","pm25")
     exports.FFT_plot(sensor_list[2880], "Pruszkowie","pm25")
 
-policz_rzeczy_inz()
+
+startTime = datetime.now() #mierzenie czasu wykonywania programu
+
+
+json_list = init.import_data()
+sensor_list = init.init_sensor_list(json_list)
+init.calc_div(sensor_list)
+init.calc_div(sensor_list, PM="pm25")
+init.calc_coef_div(sensor_list,PM="pm2,5")
+init.calc_coef_div(sensor_list,PM="pm10")
+init.calc_coef_pm(sensor_list,PM="pm2.5")
+exports.cor_of_dist_plot(sensor_list,div=True)
+exports.cor_of_dist_plot(sensor_list,PM="pm2.5",div=False)
+exports.cor_of_dist_plot(sensor_list,PM="pm2.5",div=True)
+
 
 print("Program wykonywał się " + str((datetime.now() - startTime).seconds)+ " sekund")

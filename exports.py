@@ -600,3 +600,69 @@ def mean_pm_div_wei_hist(sensor_list,PM="pm10"):
         pyplot.xlabel('dywergencja względna pm2,5')
         pyplot.ylabel('liczba zliczen')
         pyplot.show()
+
+
+def cor_of_dist_plot(sensor_list, PM="pm10",div=False):
+    x = []
+    y = []
+    from geopy.distance import great_circle
+    if PM == "pm10" and div is False:
+        for i in sensor_list.values():
+            for j in i.cor_coefs_pm10:
+                y.append(j[1])
+                me = (i.latitude, i.longitude)
+                it = (sensor_list[j[0]].latitude, sensor_list[j[0]].longitude)
+                dist = great_circle(me, it).kilometers
+                x.append(dist)
+
+        from matplotlib import pyplot
+        pyplot.plot(x, y,'o',markersize=1)
+        pyplot.title("Wykres współczynnika od odległości\n dla przebiegów PM10")
+        pyplot.xlabel("odległość[km]")
+        pyplot.ylabel("wsp. korelacji")
+        pyplot.show()
+    if PM == "pm10" and div is True:
+        for i in sensor_list.values():
+            for j in i.cor_coefs_pm10_div:
+                y.append(j[1])
+                me = (i.latitude, i.longitude)
+                it = (sensor_list[j[0]].latitude, sensor_list[j[0]].longitude)
+                dist = great_circle(me, it).kilometers
+                x.append(dist)
+
+        from matplotlib import pyplot
+        pyplot.plot(x, y,'o',markersize=1)
+        pyplot.title("Wykres współczynnika od odległości\n dla przebiegów dywergencji względnej PM10")
+        pyplot.xlabel("odległość[km]")
+        pyplot.ylabel("wsp. korelacji")
+        pyplot.show()
+    if PM != "pm10" and div is False:
+        for i in sensor_list.values():
+            for j in i.cor_coefs_pm2_5:
+                y.append(j[1])
+                me = (i.latitude, i.longitude)
+                it = (sensor_list[j[0]].latitude, sensor_list[j[0]].longitude)
+                dist = great_circle(me, it).kilometers
+                x.append(dist)
+
+        from matplotlib import pyplot
+        pyplot.plot(x, y,'o',markersize=1)
+        pyplot.title("Wykres współczynnika od odległości\n dla przebiegów PM2,5")
+        pyplot.xlabel("odległość[km]")
+        pyplot.ylabel("wsp. korelacji")
+        pyplot.show()
+    if PM != "pm10" and div is True:
+        for i in sensor_list.values():
+            for j in i.cor_coefs_pm2_5_div:
+                y.append(j[1])
+                me = (i.latitude, i.longitude)
+                it = (sensor_list[j[0]].latitude, sensor_list[j[0]].longitude)
+                dist = great_circle(me, it).kilometers
+                x.append(dist)
+
+        from matplotlib import pyplot
+        pyplot.plot(x, y,'o',markersize=1)
+        pyplot.title("Wykres współczynnika od odległości\n dla przebiegów dywergencji PM2,5")
+        pyplot.xlabel("odległość[km]")
+        pyplot.ylabel("wsp. korelacji")
+        pyplot.show()
