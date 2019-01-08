@@ -310,7 +310,9 @@ def max_div_hist(sensor_list, PM = "pm10"):
     pyplot.ylabel('liczba zliczen')
     pyplot.show()
 
-def corr_coef_hist(sensor_list,PM="pm10",div=False,log=False):
+def corr_coef_hist(sensor_list,PM="pm10",div=False,log=False,min=0):
+    if (PM != "pm10" or div is True) and min > 0:
+        print("---MINIMALNĄ LICZBĘ SĄSIADÓW ZAIMPLEMENTOWANO JEDYNIE DLA KORELACJI PM10---")
     if PM == "pm10":
         print("----prosze sprawdzic czy wyliczono wspolczynniki korelacji----")
         values = []
@@ -318,10 +320,14 @@ def corr_coef_hist(sensor_list,PM="pm10",div=False,log=False):
         label = ''
         if div == False:
             for i in sensor_list.values():
-                for j in i.cor_coefs_pm10:
-                    values.append(j[1])
-            title = "Histogram współczynników korelacji dla przebiegów pm10"
-            label = 'Współczynnik korelacji'
+                if len(i.connections) > min:
+                    for j in i.cor_coefs_pm10:
+                        values.append(j[1])
+                title = "Histogram współczynników korelacji dla przebiegów pm10"
+                if min > 0:
+                    title = "Histogram współczynników korelacji dla przebiegów pm10\ndla sensorów o liczbie sąsiadów większej niż n = " + str(min)
+
+                label = 'Współczynnik korelacji'
         else:
             for i in sensor_list.values():
                 for j in i.cor_coefs_pm10_div:
@@ -666,3 +672,31 @@ def cor_of_dist_plot(sensor_list, PM="pm10",div=False):
         pyplot.xlabel("odległość[km]")
         pyplot.ylabel("wsp. korelacji")
         pyplot.show()
+
+def major_cities_corr_hist(sensor_list):
+    wawa_corr = []
+    kra_corr = []
+    olsz_corr = []
+    cz_corr = []
+    for i in sensor_list.values():
+        if i.address == "Warszawa":
+            for j in i.cor_coefs_pm10:
+                wawa_corr.append(j[1])
+        elif i.address == "Kraków":
+            for j in i.cor_coefs_pm10:
+                kra_corr.append(j[1])
+        elif i.address == "Olsztyn":
+            for j in i.cor_coefs_pm10:
+                olsz_corr.append(j[1])
+        elif i.address == "Częstochowa":
+            for j in i.cor_coefs_pm10:
+                cz_corr.append(j[1])
+    from matplotlib import pyplot
+    pyplot.hist([wawa_corr,kra_corr,olsz_corr,cz_corr], label=["Warszawa","Kraków","Olsztyn","Częstochowa"],bins=30,histtype='bar')
+    pyplot.legend()
+    pyplot.title("Porównanie rozkładów korelacji przebiegów PM10\n w dużych miastach")
+    pyplot.xlabel("współczynnik korelacji")
+    pyplot.ylabel("liczba zliczeń")
+    pyplot.tight_layout()
+    pyplot.show()
+

@@ -37,14 +37,9 @@ startTime = datetime.now() #mierzenie czasu wykonywania programu
 
 json_list = init.import_data()
 sensor_list = init.init_sensor_list(json_list)
-init.calc_div(sensor_list)
-init.calc_div(sensor_list, PM="pm25")
-init.calc_coef_div(sensor_list,PM="pm2,5")
-init.calc_coef_div(sensor_list,PM="pm10")
-init.calc_coef_pm(sensor_list,PM="pm2.5")
-exports.cor_of_dist_plot(sensor_list,div=True)
-exports.cor_of_dist_plot(sensor_list,PM="pm2.5",div=False)
-exports.cor_of_dist_plot(sensor_list,PM="pm2.5",div=True)
+init.calc_coef_pm(sensor_list)
+exports.corr_coef_hist(sensor_list,min=0)
+exports.corr_coef_hist(sensor_list,min=4)
 
 
 print("Program wykonywał się " + str((datetime.now() - startTime).seconds)+ " sekund")
