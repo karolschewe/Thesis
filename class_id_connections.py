@@ -11,7 +11,7 @@ class id_connections:
         self.latitude = sensorek.latitude
         self.longitude = sensorek.longitude
         temp_id_list = []
-        for i in sensor_list:
+        for i in sensor_list.values():
             me = (sensorek.latitude, sensorek.longitude)
             it = (i.latitude, i.longitude)
             dist = great_circle(me, it).kilometers

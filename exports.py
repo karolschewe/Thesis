@@ -310,7 +310,7 @@ def max_div_hist(sensor_list, PM = "pm10"):
     pyplot.ylabel('liczba zliczen')
     pyplot.show()
 
-def corr_coef_hist(sensor_list,PM="pm10",div=False,log=False,min=0):
+def corr_coef_hist(sensor_list,PM="pm10",div=False,log=False,min=0,gdzie = ""):
     if (PM != "pm10" or div is True) and min > 0:
         print("---MINIMALNĄ LICZBĘ SĄSIADÓW ZAIMPLEMENTOWANO JEDYNIE DLA KORELACJI PM10---")
     if PM == "pm10":
@@ -323,7 +323,7 @@ def corr_coef_hist(sensor_list,PM="pm10",div=False,log=False,min=0):
                 if len(i.connections) > min:
                     for j in i.cor_coefs_pm10:
                         values.append(j[1])
-                title = "Histogram współczynników korelacji dla przebiegów pm10"
+                title = "Histogram współczynników korelacji dla przebiegów pm10\n" + gdzie
                 if min > 0:
                     title = "Histogram współczynników korelacji dla przebiegów pm10\ndla sensorów o liczbie sąsiadów większej niż n = " + str(min)
 
@@ -332,7 +332,7 @@ def corr_coef_hist(sensor_list,PM="pm10",div=False,log=False,min=0):
             for i in sensor_list.values():
                 for j in i.cor_coefs_pm10_div:
                     values.append(j[1])
-            title = "Histogram współczynników korelacji dla przebiegów \n dywergencji względnej pm10"
+            title = "Histogram współczynników korelacji dla przebiegów \n dywergencji względnej pm10" + gdzie
             label = 'Współczynnik korelacji'
 
         biny = []
@@ -351,7 +351,7 @@ def corr_coef_hist(sensor_list,PM="pm10",div=False,log=False,min=0):
         stats_string = ("średnia: " + str(round(mean, 3)) + "\n" + "mediana: " + str(
             round(median, 3)) + "\n" + "odch. std: " + str(
             round(stdev, 3)) + "\n" + "max: " + str(round(maxvalue, 3)) + "\n" + "N: " + str(len(values)))
-        pyplot.figtext(0.7, 0.7, stats_string)
+        pyplot.figtext(0.15, 0.7, stats_string)
         pyplot.title(title)
         pyplot.xlabel(label)
         pyplot.ylabel('liczba zliczen')
@@ -367,13 +367,13 @@ def corr_coef_hist(sensor_list,PM="pm10",div=False,log=False,min=0):
             for i in sensor_list.values():
                 for j in i.cor_coefs_pm2_5:
                     values.append(j[1])
-            title = "Histogram współczynników korelacji dla przebiegów pm2,5"
+            title = "Histogram współczynników korelacji dla przebiegów pm2,5" + gdzie
             label = 'Współczynnik korelacji'
         else:
             for i in sensor_list.values():
                 for j in i.cor_coefs_pm2_5_div:
                     values.append(j[1])
-            title = "Histogram współczynników korelacji dla przebiegów \n dywergencji względnej pm2,5"
+            title = "Histogram współczynników korelacji dla przebiegów \n dywergencji względnej pm2,5" + gdzie
             label = 'Współczynnik korelacji'
 
         biny = []

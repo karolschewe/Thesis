@@ -25,10 +25,14 @@ def import_data(path = None):
     return json_list_dict
 
 
-def init_sensor_list(json_list,import_all = False,random=False):
+def init_sensor_list(json_list,import_all = False,random=False,custom_list = False,custom_conn=False):
     from class_sensor import Sensor
     sensor_list = {}
-    file = open('lista_czujnikow', 'r')
+    # ---tworzenie lsity czujnikow na podstawie pliku z listą id---
+    if custom_list is False:
+        file = open('lista_czujnikow', 'r')
+    else:
+        file = open('ciekawe_id')
     iteratorek = 0
     sensor_id = 0
     lat = 0
@@ -49,16 +53,18 @@ def init_sensor_list(json_list,import_all = False,random=False):
             iteratorek=0
 
 
-    # wyliczenie polaczen
-    # init.init_connections(sensor_list)
+
+    # wczytanie polaczen z pliku
     zmienna = 0
     lista_id = []
     print("import połączeń i pomiarów")
     for i in sensor_list.values():
         if zmienna % 200 == 0:
             print(str(zmienna / 20) + "%")
-        if random == False:
+        if random == False and custom_list == False:
             i.import_connections()
+        elif random == False and custom_conn == True:
+            i.import_connections(dir="custom_connections")
         else:
             from random import sample
             i.connections = (sample(sensor_list.keys(),10))
@@ -79,11 +85,14 @@ def init_sensor_list(json_list,import_all = False,random=False):
 
 # woronoj w google: voronoi diagrsm python implrmrnysyion
 #jest w scipy
-def init_connections(sensor_list):
+def init_connections(sensor_list,custom=False):#wyliczanie i export polaczen do pliku
     from class_id_connections import id_connections
     connections = []
-    plik = open("siec_polaczen", "w")
-    for i in sensor_list:
+    if custom is False:
+        plik = open("siec_polaczen", "w")
+    else:
+        plik = open("custom_connections", "w")
+    for i in sensor_list.values():
         connections.append(id_connections(i, sensor_list, 5))
 
     for i in connections:
@@ -189,3 +198,26 @@ def calc_means(sensor_list):
         i.calc_mean_maxes_pm2_5()
         i.calc_mean_maxes_div()
         i.calc_mean_maxes_div_pm2_5()
+
+def find_closest_sensors(sensor_list,latitude,longitude,inner_radius=0,outer_radius=5):
+    from geopy.distance import great_circle
+    id_list = []
+    lat_list = []
+    long_list = []
+    for i in sensor_list.values():
+        centre = (latitude, longitude)
+        me = (i.latitude, i.longitude)
+        dist = great_circle(me, centre).kilometers
+        if dist > inner_radius and dist < outer_radius:
+            id_list.append(i.id)
+            lat_list.append(i.latitude)
+            long_list.append(i.longitude)
+    file = open("ciekawe_id","w")
+    for j in range(len(id_list)):
+        print(id_list[j],file=file)
+        print(lat_list[j],file=file)
+        print(long_list[j],file=file)
+        print(" ",file=file)
+    file.close()
+
+
