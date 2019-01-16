@@ -61,10 +61,10 @@ def init_sensor_list(json_list,import_all = False,random=False,custom_list = Fal
     for i in sensor_list.values():
         if zmienna % 200 == 0:
             print(str(zmienna / 20) + "%")
-        if random == False and custom_list == False:
-            i.import_connections()
-        elif random == False and custom_conn == True:
+        if random == False and custom_conn == True:
             i.import_connections(dir="custom_connections")
+        elif random == False and custom_conn == False:
+            i.import_connections()
         else:
             from random import sample
             i.connections = (sample(sensor_list.keys(),10))

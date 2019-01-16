@@ -401,7 +401,7 @@ def corr_coef_hist(sensor_list,PM="pm10",div=False,log=False,min=0,gdzie = ""):
         pyplot.show()
 
 
-def FFT_plot(sensor,gdzie = "", type_of_data="pm10",div=False):
+def FFT_plot(sensor,gdzie = "", type_of_data="pm10",div=False,max = 0):
     from numpy import fft, absolute,log2,argmax
     from math import ceil
     biny = []
@@ -469,15 +469,12 @@ def FFT_plot(sensor,gdzie = "", type_of_data="pm10",div=False):
         for i in transformed_data:
             modules.append(absolute(i))
         print(modules)
-        n, bins, patches = pyplot.hist(modules, bins=biny)
-        elem = argmax(n)
-        print(elem)
-        print(biny[elem])
-        stats_string = "max: " + str(biny[elem])
-        pyplot.figtext(0.8, 0.8, stats_string)
+        pyplot.plot(modules)
         pyplot.title(title)
-        pyplot.xlabel("moduł")
-        pyplot.ylabel("liczba zliczeń")
+        pyplot.xlabel("częstotiwość [1/2048h]")
+        if max > 0:
+            pyplot.ylim(top=max)
+        pyplot.ylabel("amplituda")
         pyplot.show()
 
     else:
@@ -543,15 +540,10 @@ def FFT_plot(sensor,gdzie = "", type_of_data="pm10",div=False):
         for i in transformed_data:
             modules.append(absolute(i))
         print(modules)
-        n, bins, patches = pyplot.hist(modules, bins=biny)
-        elem = argmax(n)
-        print(elem)
-        print(biny[elem])
-        stats_string = "max: " + str(biny[elem])
-        pyplot.figtext(0.8, 0.8, stats_string)
+        pyplot.plot(modules)
         pyplot.title(title)
-        pyplot.xlabel("moduł")
-        pyplot.ylabel("liczba zliczeń")
+        pyplot.xlabel("częstotliwość[1/2048h]")
+        pyplot.ylabel("amplituda")
         pyplot.show()
 
 

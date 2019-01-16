@@ -7,6 +7,7 @@ from class_sensor import Sensor
 def policz_rzeczy_inz():
     json_list = init.import_data()
     sensor_list = init.init_sensor_list(json_list, True)
+    del json_list
     init.calc_div(sensor_list)
     init.calc_div(sensor_list,PM="pm25")
     init.calc_div_weighted(sensor_list)
@@ -43,12 +44,14 @@ def custom_graph(latitude,longitude,inner_radius=0,outer_radius = 5,podpis=""):
 
 startTime = datetime.now() #mierzenie czasu wykonywania programu
 
-
-custom_graph(52.231565,21.006170,0,12,"dla całej Warszawy")
-custom_graph(52.231565,21.006170,0,6,"dla centrum Warszawy")
-custom_graph(52.231565,21.006170,9,14,"dla obrzeży Warszawy")
-custom_graph(50.053527,19.977138,0,4,"dla centrum Krakowa")
-custom_graph(50.053527,19.977138,6,10,"dla obrzeży Krakowa")
-custom_graph(50.053527,19.977138,0,10,"dla całego Krakowa")
+json_list = init.import_data()
+sensor_list = init.init_sensor_list(json_list,custom_list=True)
+del json_list
+exports.FFT_plot(sensor_list[739], "Ładach")
+exports.FFT_plot(sensor_list[1123], "Gliwicach",max=50000)
+exports.FFT_plot(sensor_list[2880], "Pruszkowie")
+exports.FFT_plot(sensor_list[739], "Ładach", "pm25")
+exports.FFT_plot(sensor_list[1123], "Gliwicach", "pm25")
+exports.FFT_plot(sensor_list[2880], "Pruszkowie", "pm25")
 
 print("Program wykonywał się " + str((datetime.now() - startTime).seconds)+ " sekund")
