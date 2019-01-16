@@ -13,6 +13,10 @@ def policz_rzeczy_inz():
     init.calc_div_weighted(sensor_list)
     init.calc_div_weighted(sensor_list,PM="pm25")
     init.calc_means(sensor_list)
+    init.calc_coef_pm(sensor_list)
+    init.calc_coef_pm(sensor_list,PM="pm25")
+    init.calc_coef_div(sensor_list)
+    init.calc_coef_div(sensor_list,PM="pm25")
     exports.mean_pm_hist(sensor_list)
     exports.mean_pm_hist(sensor_list,PM="pm25")
     exports.max_pm_hist(sensor_list)
@@ -31,6 +35,11 @@ def policz_rzeczy_inz():
     exports.FFT_plot(sensor_list[739], "Ładach","pm25")
     exports.FFT_plot(sensor_list[1123], "Gliwicach","pm25")
     exports.FFT_plot(sensor_list[2880], "Pruszkowie","pm25")
+    exports.corr_coef_hist(sensor_list)
+    exports.corr_coef_hist(sensor_list,PM="pm25")
+    exports.corr_coef_hist(sensor_list,div=True)
+    exports.corr_coef_hist(sensor_list,PM="pm25",div=True)
+
 
 def custom_graph(latitude,longitude,inner_radius=0,outer_radius = 5,podpis=""):
     json_list = init.import_data()
@@ -45,13 +54,10 @@ def custom_graph(latitude,longitude,inner_radius=0,outer_radius = 5,podpis=""):
 startTime = datetime.now() #mierzenie czasu wykonywania programu
 
 json_list = init.import_data()
-sensor_list = init.init_sensor_list(json_list,custom_list=True)
+sensor_list = init.init_sensor_list(json_list)
 del json_list
-exports.FFT_plot(sensor_list[739], "Ładach")
-exports.FFT_plot(sensor_list[1123], "Gliwicach",max=50000)
-exports.FFT_plot(sensor_list[2880], "Pruszkowie")
-exports.FFT_plot(sensor_list[739], "Ładach", "pm25")
-exports.FFT_plot(sensor_list[1123], "Gliwicach", "pm25")
-exports.FFT_plot(sensor_list[2880], "Pruszkowie", "pm25")
+init.calc_div(sensor_list,PM="pm25")
+init.calc_coef_div(sensor_list,"pm25")
+exports.corr_coef_hist(sensor_list,"25",div=True)
 
 print("Program wykonywał się " + str((datetime.now() - startTime).seconds)+ " sekund")
